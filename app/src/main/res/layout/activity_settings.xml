@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="28dp">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingVertical="20dp"
+            app:srcCompat="@drawable/arrow_back"
+            app:iconTint="@color/YP_Black">
+        </ImageView>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:layout_gravity="start"
+            android:paddingVertical="20dp"
+            android:text="@string/Settings"
+            android:textColor="@color/YP_Black"
+            android:textSize="@dimen/text_size"
+            android:textStyle="bold">
+
+        </TextView>
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:paddingVertical="20dp"
+                android:paddingStart="16dp"
+                android:text="@string/Dark_theme"
+                android:textColor="@color/YP_Black"
+                android:textSize="16sp"/>
+
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:paddingVertical="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:paddingVertical="20dp"
+            android:paddingStart="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/Share"
+            android:textColor="@color/YP_Black"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingVertical="20dp"
+            android:paddingStart="18dp"
+            app:srcCompat="@drawable/share"
+            app:iconGravity="textEnd"
+            app:iconTint="@color/YP_Gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:paddingVertical="20dp"
+            android:paddingStart="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/support"
+            android:textColor="@color/YP_Black"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingVertical="20dp"
+            android:paddingStart="16dp"
+            app:srcCompat="@drawable/support"
+            app:iconTint="@color/YP_Gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:paddingVertical="20dp"
+            android:paddingStart="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="@string/Agreement"
+            android:textColor="@color/YP_Black"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="16dp"
+            android:paddingVertical="20dp"
+            app:srcCompat="@drawable/arrow"
+            app:iconGravity="textEnd"
+            app:iconTint="@color/YP_Gray" />
+    </LinearLayout>
+
+</LinearLayout>
