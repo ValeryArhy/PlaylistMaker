@@ -19,59 +19,46 @@
             android:textSize="20sp" />
     </FrameLayout>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/search_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="24dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/white"
+        android:text="@string/search"
+        android:textColor="@color/YP_Black"
+        android:textAppearance="@style/button_text"
+        app:cornerRadius="@dimen/radius_button"
+        app:icon="@drawable/search"
+        app:iconGravity="textStart"
+        app:iconTint="@color/YP_Black" />
 
-        <Button
-            android:id="@+id/search_button"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:text="@string/search"
-            android:textColor="@color/YP_Black"
-            android:textSize="@dimen/text_size"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/search"
-            app:iconGravity="textStart"
-            app:iconTint="@color/YP_Black"
-            android:foreground="?attr/selectableItemBackground"/>
+    <Button
+        android:id="@+id/media_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/Media_library"
+        android:textColor="@color/YP_Black"
+        android:textAppearance="@style/button_text"
+        app:cornerRadius="@dimen/radius_button"
+        app:icon="@drawable/media"
+        app:iconGravity="textStart"
+        app:iconTint="@color/YP_Black" />
 
-        <Button
-            android:id="@+id/media_button"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:text="@string/Media_library"
-            android:textColor="@color/YP_Black"
-            android:textSize="@dimen/text_size"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/media"
-            app:iconGravity="textStart"
-            app:iconTint="@color/YP_Black"/>
-
-        <Button
-            android:id="@+id/set_button"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:text="@string/Settings"
-            android:textColor="@color/YP_Black"
-            android:textSize="@dimen/text_size"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/settings"
-            app:iconGravity="textStart"
-            app:iconTint="@color/YP_Black" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/set_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/Settings"
+        android:textAppearance="@style/button_text"
+        android:textColor="@color/YP_Black"
+        app:cornerRadius="@dimen/radius_button"
+        app:icon="@drawable/settings"
+        app:iconGravity="textStart"
+        app:iconTint="@color/YP_Black" />
 </LinearLayout>

@@ -12,14 +12,11 @@ import androidx.core.view.WindowInsetsCompat
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
         val buttonSearch = findViewById<Button>(R.id.search_button)
         val mediaButton = findViewById<Button>(R.id.media_button)
         val setButton = findViewById<Button>(R.id.set_button)
-
-
 
         buttonSearch.setOnClickListener {
             val displayIntent = Intent(this, SearchActivity::class.java)

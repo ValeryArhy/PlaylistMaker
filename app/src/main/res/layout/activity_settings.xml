@@ -1,146 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="28dp">
+        app:navigationIcon="@drawable/arrow_back"
+        app:title="@string/Settings"
+        app:titleTextAppearance="@style/Title_settings">
 
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingVertical="20dp"
-            app:srcCompat="@drawable/arrow_back"
-            app:iconTint="@color/YP_Black">
-        </ImageView>
+    </com.google.android.material.appbar.MaterialToolbar>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:layout_gravity="start"
-            android:paddingVertical="20dp"
-            android:text="@string/Settings"
-            android:textColor="@color/YP_Black"
-            android:textSize="@dimen/text_size"
-            android:textStyle="bold">
-
-        </TextView>
-
-
-
-
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:paddingVertical="20dp"
-                android:paddingStart="16dp"
-                android:text="@string/Dark_theme"
-                android:textColor="@color/YP_Black"
-                android:textSize="16sp"/>
-
-        <Switch
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="1"
-            android:paddingVertical="20dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/padding_horizontal"
+        android:paddingVertical="@dimen/padding_vertical"
+        android:text="@string/Dark_theme"
+        android:textAppearance="@style/Lines_settings" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="20dp"
-            android:paddingStart="16dp"
-            android:layout_gravity="center_vertical"
-            android:text="@string/Share"
-            android:textColor="@color/YP_Black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingVertical="20dp"
-            android:paddingStart="18dp"
-            app:srcCompat="@drawable/share"
-            app:iconGravity="textEnd"
-            app:iconTint="@color/YP_Gray" />
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/share"
+        android:paddingHorizontal="@dimen/padding_horizontal"
+        android:paddingVertical="@dimen/padding_vertical"
+        android:text="@string/Share"
+        android:textAppearance="@style/Lines_settings" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="20dp"
-            android:paddingStart="16dp"
-            android:layout_gravity="center_vertical"
-            android:text="@string/support"
-            android:textColor="@color/YP_Black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingVertical="20dp"
-            android:paddingStart="16dp"
-            app:srcCompat="@drawable/support"
-            app:iconTint="@color/YP_Gray" />
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/support"
+        android:paddingHorizontal="@dimen/padding_horizontal"
+        android:paddingVertical="@dimen/padding_vertical"
+        android:text="@string/support"
+        android:textAppearance="@style/Lines_settings" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="20dp"
-            android:paddingStart="16dp"
-            android:layout_gravity="center_vertical"
-            android:text="@string/Agreement"
-            android:textColor="@color/YP_Black"
-            android:textSize="16sp"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="16dp"
-            android:paddingVertical="20dp"
-            app:srcCompat="@drawable/arrow"
-            app:iconGravity="textEnd"
-            app:iconTint="@color/YP_Gray" />
-    </LinearLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/arrow"
+        android:paddingHorizontal="@dimen/padding_horizontal"
+        android:paddingVertical="@dimen/padding_vertical"
+        android:text="@string/Agreement"
+        android:textAppearance="@style/Lines_settings" />
 
 </LinearLayout>
