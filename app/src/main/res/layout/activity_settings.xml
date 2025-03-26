@@ -24,7 +24,9 @@
         android:paddingHorizontal="@dimen/padding_horizontal"
         android:paddingVertical="@dimen/padding_vertical"
         android:text="@string/Dark_theme"
-        android:textAppearance="@style/Lines_settings" />
+        android:textAppearance="@style/Lines_settings"
+        app:thumbTint="@color/switch_thumb_color"
+        app:trackTint="@color/switch_track_color"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
