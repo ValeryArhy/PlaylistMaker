@@ -6,5 +6,10 @@
     <string name="Dark_theme">Темная тема</string>
     <string name="Share">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
+    <string name="mailAgreement">Valeryarhy@yandex.ru</string>
     <string name="Agreement">Пользовательское соглашение</string>
+    <string name="shareLink">"https://practicum.yandex.ru/profile/android-developer-plus/?from=profile_subscriptions-with-prof-recommendations"</string>
+    <string name="mailSupport">"Спасибо разработчикам и разработчицам за крутое приложение!"</string>
+    <string name="themeMail">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="AgreementUrl">https://yandex.ru/legal/practicum_offer/</string>
 </resources>
