@@ -2,8 +2,6 @@
 <resources>
 
     <style name="Title" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/text_size</item>
         <item name="fontFamily">@font/ys_display_medium</item>
@@ -12,8 +10,6 @@
     <style name="Lines_settings" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:paddingVertical">20dp</item>
@@ -21,8 +17,6 @@
     </style>
 
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="backgroundTint">@color/white</item>
         <item name="cornerRadius">16dp</item>

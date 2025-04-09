@@ -7,6 +7,8 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/toolbar"
         style="@style/Title"
         app:navigationIcon="@drawable/arrow_back"
@@ -15,24 +17,33 @@
     </com.google.android.material.appbar.MaterialToolbar>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         style="@style/Lines_settings"
         android:text="@string/Dark_theme"
         app:thumbTint="@color/switch_thumb_color"
         app:trackTint="@color/switch_track_color" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/shareButton"
         style="@style/Lines_settings"
         android:drawableEnd="@drawable/share"
         android:text="@string/Share" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/supportButton"
         style="@style/Lines_settings"
         android:drawableEnd="@drawable/support"
         android:text="@string/support" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/agreementButton"
         style="@style/Lines_settings"
         android:drawableEnd="@drawable/arrow"

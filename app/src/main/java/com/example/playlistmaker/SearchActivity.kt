@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,10 +14,6 @@ import com.google.android.material.appbar.MaterialToolbar
 class SearchActivity : AppCompatActivity() {
 
     private var searchText: String = ""
-
-    companion object {
-        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +27,6 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        val linearSearch = findViewById<LinearLayout>(R.id.container_search)
         val inputEditText = findViewById<EditText>(R.id.edit_text_search)
         val clearButton = findViewById<ImageView>(R.id.icon_clear)
 
@@ -55,14 +51,13 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-
         inputEditText.addTextChangedListener(simpleTextWatcher)
-
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
-        }
+            hideKeyboard(inputEditText)
 
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -77,9 +72,15 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(restoredText)
 
     }
+
+    private fun hideKeyboard(view: View) {
+        (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                view.windowToken,
+                0
+            )
+    }
+
+    companion object {
+        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
+    }
 }
-
-
-
-
-

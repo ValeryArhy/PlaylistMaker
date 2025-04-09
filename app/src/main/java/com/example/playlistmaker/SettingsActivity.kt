@@ -45,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareLink)
         }
-        startActivity(Intent.createChooser(intent, "Поделиться"))
+        startActivity(Intent.createChooser(intent, getString(R.string.shareLink)))
     }
 
     private fun openSupport() {
