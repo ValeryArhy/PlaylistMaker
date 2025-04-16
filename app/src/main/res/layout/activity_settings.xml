@@ -3,56 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
-
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        style="@style/Title"
         app:navigationIcon="@drawable/arrow_back"
-        app:title="@string/Settings"
-        app:titleTextAppearance="@style/Title_settings">
+        app:title="@string/Settings">
 
     </com.google.android.material.appbar.MaterialToolbar>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
+        android:layout_marginTop="24dp"
+        style="@style/Lines_settings"
         android:text="@string/Dark_theme"
-        android:textAppearance="@style/Lines_settings"
         app:thumbTint="@color/switch_thumb_color"
-        app:trackTint="@color/switch_track_color"/>
+        app:trackTint="@color/switch_track_color" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/shareButton"
+        style="@style/Lines_settings"
         android:drawableEnd="@drawable/share"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:text="@string/Share"
-        android:textAppearance="@style/Lines_settings" />
+        android:text="@string/Share" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/supportButton"
+        style="@style/Lines_settings"
         android:drawableEnd="@drawable/support"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:text="@string/support"
-        android:textAppearance="@style/Lines_settings" />
+        android:text="@string/support" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/agreementButton"
+        style="@style/Lines_settings"
         android:drawableEnd="@drawable/arrow"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:text="@string/Agreement"
-        android:textAppearance="@style/Lines_settings" />
+        android:text="@string/Agreement" />
 
 </LinearLayout>
