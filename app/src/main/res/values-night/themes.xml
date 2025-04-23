@@ -9,6 +9,7 @@
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorPrimaryInverse">@color/YP_Black</item>
         <item name="colorSecondaryFixed">@color/white</item>
+        <item name="colorSurfaceInverse">@color/white</item>
 
     </style>
 </resources>
