@@ -4,4 +4,9 @@
     <dimen name="radius_button">16dp</dimen>
     <dimen name="padding_vertical">20dp</dimen>
     <dimen name="padding_horizontal">16dp</dimen>
+    <dimen name="item_vertical_padding">8dp</dimen>
+    <dimen name="item_padding_start">13dp</dimen>
+    <dimen name="item_padding_end">12dp</dimen>
+    <dimen name="album_image_margin_end">8dp</dimen>
+    <dimen name="album_image_corner_radius">2dp</dimen>
 </resources>
