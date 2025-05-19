@@ -8,10 +8,10 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/toolbar"
         style="@style/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:navigationIcon="@drawable/arrow_back"
         app:title="@string/search">
 
@@ -23,12 +23,14 @@
         android:layout_margin="16dp">
 
         <EditText
-            android:id="@+id/edit_text_search"
+            android:id="@+id/query_input"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:lines="1"
             android:maxLength="15"
-            android:lines="1" />
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/icon_clear"
@@ -41,12 +43,50 @@
             android:src="@drawable/clear"
             android:visibility="gone" />
     </FrameLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <LinearLayout
+            android:id="@+id/placeholder_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="102dp"
+                android:src="@drawable/search_null" />
+
+            <TextView
+                android:id="@+id/placeholder_message"
+                style="@style/TextView.Medium.19.black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_connection" />
+
+            <Button
+                android:id="@+id/update_button"
+                style="@style/ButtonStyleBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/update" />
+
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
 
 
