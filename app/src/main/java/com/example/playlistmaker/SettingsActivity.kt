@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
@@ -21,6 +23,12 @@ class SettingsActivity : AppCompatActivity() {
         val shareButton = findViewById<MaterialTextView>(R.id.shareButton)
         val supportButton = findViewById<MaterialTextView>(R.id.supportButton)
         val agreementButton = findViewById<MaterialTextView>(R.id.agreementButton)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        themeSwitcher.isChecked = (application as App).darkTheme
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
 
         shareButton.setOnClickListener {
             shareAppLink()

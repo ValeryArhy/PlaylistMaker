@@ -13,12 +13,17 @@ import java.util.Locale
 
 class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    var trackList = ArrayList<Track>()
+    var tracks = ArrayList<Track>()
+    private var listener: ((Track) -> Unit)? = null
 
     fun setTracks(tracks: List<Track>) {
-        trackList.clear()
-        trackList.addAll(tracks)
+        this.tracks.clear()
+        this.tracks.addAll(tracks)
         notifyDataSetChanged()
+    }
+
+    fun setOnItemClickListener(listener: (Track) -> Unit) {
+        this.listener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -28,11 +33,15 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(trackList[position])
+        val track = tracks[position]
+        holder.bind(track)
+        holder.itemView.setOnClickListener {
+            listener?.invoke(track)
+        }
     }
 
     override fun getItemCount(): Int {
-        return trackList.size
+        return tracks.size
     }
 
     class TrackViewHolder(parentView: View) : RecyclerView.ViewHolder(parentView) {
@@ -46,12 +55,12 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
             artistName.text = track.artistName
             trackTimeMillis.text = formatTime(track.trackTimeMillis)
 
-
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
                 .transform(RoundedCorners(4))
                 .into(artworkUrl100)
+
         }
         private fun formatTime(millis: Long): String {
             val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
