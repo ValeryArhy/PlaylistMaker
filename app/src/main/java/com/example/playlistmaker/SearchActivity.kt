@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -16,7 +17,13 @@ import com.google.android.material.appbar.MaterialToolbar
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+
 class SearchActivity : AppCompatActivity() {
+
+    companion object {
+        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
+    }
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
@@ -164,22 +171,24 @@ class SearchActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun ViewShow(showView: View, hideView: View) {
+        showView.visibility = View.VISIBLE
+        hideView.visibility = View.GONE
+    }
 
     private fun showHistory() {
         val history = searchHistory.getHistory()
         if (history.isNotEmpty()) {
             historyAdapter.setTracks(history)
-            historyGroup.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
+            ViewShow(historyGroup, recyclerView)
         } else {
-            historyGroup.visibility = View.GONE
-            recyclerView.visibility = View.GONE
+            ViewShow(recyclerView, historyGroup)
+
         }
     }
 
     private fun showResults() {
-        historyGroup.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+        ViewShow(recyclerView, historyGroup)
     }
 
     private fun showMessage(imageResId: Int, message: String, showUpdateButton: Boolean) {
@@ -211,7 +220,5 @@ class SearchActivity : AppCompatActivity() {
         queryInput.setText(restoredText)
     }
 
-    companion object {
-        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
-    }
+
 }
