@@ -10,6 +10,10 @@ class HistoryAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     private val history = mutableListOf<Track>()
     private var listener: ((Track) -> Unit)? = null
 
+    fun setOnItemClickListener(listener: (Track) -> Unit) {
+        this.listener = listener
+    }
+
     fun setTracks(tracks: List<Track>) {
         history.clear()
         history.addAll(tracks)
@@ -26,6 +30,7 @@ class HistoryAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
         holder.bind(track)
         holder.itemView.setOnClickListener {
             listener?.invoke(track)
+
         }
     }
 

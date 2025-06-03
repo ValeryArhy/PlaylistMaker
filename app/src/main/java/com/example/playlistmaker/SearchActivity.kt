@@ -2,21 +2,26 @@ package com.example.playlistmaker
 
 import HistoryAdapter
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 
 class SearchActivity : AppCompatActivity() {
@@ -25,12 +30,14 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
     }
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    object NetworkClient {
+        private val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    private val itunesService = retrofit.create(ItunesAPI::class.java)
+        val itunesApi: ItunesAPI = retrofit.create(ItunesAPI::class.java)
+    }
 
     private var searchText: String = ""
 
@@ -107,7 +114,7 @@ class SearchActivity : AppCompatActivity() {
                     showHistory()
                 } else {
                     showResults()
-                    }
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -141,14 +148,30 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.setOnItemClickListener { track ->
             searchHistory.saveTrack(track)
+            val intent = Intent(this@SearchActivity, MediaActivity::class.java).apply {
+                putExtra("track", track)
+            }
+            startActivity(intent)
         }
+
+        historyAdapter.setOnItemClickListener { track ->
+            val intent = Intent(this@SearchActivity, MediaActivity::class.java).apply {
+                putExtra("track", track)
+            }
+            startActivity(intent)
+        }
+
+
 
     }
 
     private fun searchMusic(query: String) {
-        itunesService.searchMusic(query)
+        NetworkClient.itunesApi.searchMusic(query)
             .enqueue(object : Callback<SearchResponse> {
-                override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                override fun onResponse(
+                    call: Call<SearchResponse>,
+                    response: Response<SearchResponse>
+                ) {
                     if (response.isSuccessful) {
                         val results = response.body()?.results.orEmpty()
                         tracks.clear()
@@ -156,13 +179,21 @@ class SearchActivity : AppCompatActivity() {
                         adapter.setTracks(tracks)
 
                         if (tracks.isEmpty()) {
-                            showMessage(R.drawable.search_null, getString(R.string.nothing_found), false)
+                            showMessage(
+                                R.drawable.search_null,
+                                getString(R.string.nothing_found),
+                                false
+                            )
                         } else {
                             hideMessage()
                             showResults()
                         }
                     } else {
-                        showMessage(R.drawable.error_internet, getString(R.string.no_connection), true)
+                        showMessage(
+                            R.drawable.error_internet,
+                            getString(R.string.no_connection),
+                            true
+                        )
                     }
                 }
 
@@ -171,6 +202,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             })
     }
+
     private fun ViewShow(showView: View, hideView: View) {
         showView.visibility = View.VISIBLE
         hideView.visibility = View.GONE
@@ -219,6 +251,4 @@ class SearchActivity : AppCompatActivity() {
         val restoredText = savedInstanceState.getString(SEARCH_TEXT_KEY, "")
         queryInput.setText(restoredText)
     }
-
-
 }

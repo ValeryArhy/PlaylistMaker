@@ -49,14 +49,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/separator"
-                app:tint="@color/YP_Text_Gray" />
+                app:tint="@color/YP_Text_Gray"
+                android:paddingTop="3dp"/>
 
             <TextView
                 android:id="@+id/trackTime"
                 style="@style/TextView.Regular.11.YPGRAY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@string/hint_extra_info" />
+                tools:text="@string/hint_extra_info"
+                android:paddingTop="4dp"/>
         </LinearLayout>
     </LinearLayout>
 
