@@ -117,6 +117,22 @@
                 android:src="@drawable/search_null" />
 
             <TextView
+                android:id="@+id/no_found"
+                style="@style/TextView.Medium.19.black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/nothing_found" />
+
+            <ImageView
+                android:id="@+id/placeholder_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="102dp"
+                android:src="@drawable/error_internet" />
+
+            <TextView
                 android:id="@+id/placeholder_message"
                 style="@style/TextView.Medium.19.black"
                 android:layout_width="wrap_content"
@@ -135,5 +151,3 @@
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
-
-
