@@ -10,6 +10,7 @@
         <item name="colorPrimaryInverse">@color/YP_Text_Gray</item>
         <item name="colorSecondaryFixed">@color/Light_Gray</item>
         <item name="colorSurfaceInverse">@color/YP_Text_Gray</item>
+        <item name="colorPrimaryDark">@color/YP_Black</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

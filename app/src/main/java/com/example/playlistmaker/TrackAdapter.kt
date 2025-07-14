@@ -16,6 +16,7 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     var tracks = ArrayList<Track>()
     private var listener: ((Track) -> Unit)? = null
 
+
     fun setTracks(tracks: List<Track>) {
         this.tracks.clear()
         this.tracks.addAll(tracks)
@@ -53,20 +54,16 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
         fun bind(track: Track) {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackTimeMillis.text = formatTime(track.trackTimeMillis)
+            trackTimeMillis.text = track.getFormattedTime()
+
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
-                .transform(RoundedCorners(4))
+                .transform(RoundedCorners(itemView.context.dpToPx(2)))
                 .into(artworkUrl100)
 
         }
-        private fun formatTime(millis: Long): String {
-            val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-            return dateFormat.format(millis)
-        }
-
     }
 }
 
