@@ -119,6 +119,8 @@ class SearchActivity : AppCompatActivity() {
                 }
                 is SearchUiState.Error -> {
                     binding.placeholderContainer.isVisible = true
+                    binding.placeholderImage.isVisible = false
+                    binding.noFound.isVisible = false
                     binding.placeholderError.isVisible = true
                     binding.placeholderMessage.isVisible = true
                     binding.updateButton.isVisible = true

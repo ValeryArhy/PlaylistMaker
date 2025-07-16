@@ -12,31 +12,18 @@ class App : Application() {
         lateinit var instance: App
             private set
     }
-    var darkTheme = false
-    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
-        Creator.init(this)
         instance = this
-        sharedPrefs = getSharedPreferences("APP_THEME", MODE_PRIVATE)
-        darkTheme = sharedPrefs.getBoolean("DARK_THEME", false)
-        applyTheme()
-    }
+        Creator.init(this)
 
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
-        sharedPrefs.edit().putBoolean("DARK_THEME", darkTheme).apply()
-        applyTheme()
-    }
+        val themeInteractor = Creator.provideThemeInteractor()
+        val isDark = themeInteractor.isDarkTheme()
 
-    private fun applyTheme() {
         AppCompatDelegate.setDefaultNightMode(
-            if (darkTheme) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
+            if (isDark) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
 }
