@@ -6,4 +6,7 @@ interface TrackHistoryRepository {
     fun saveTrack(track: Track)
     fun getHistory(): List<Track>
     fun clearHistory()
+
+    fun saveLastPlayedTrack(track: Track)
+    fun getLastPlayedTrack(): Track?
 }

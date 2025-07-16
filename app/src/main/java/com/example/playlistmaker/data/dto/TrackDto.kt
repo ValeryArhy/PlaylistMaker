@@ -1,8 +1,5 @@
 package com.example.playlistmaker.data.dto
 
-import android.icu.text.SimpleDateFormat
-import java.io.Serializable
-import java.util.Locale
 
 data class TrackDto(
     val trackId: Long,

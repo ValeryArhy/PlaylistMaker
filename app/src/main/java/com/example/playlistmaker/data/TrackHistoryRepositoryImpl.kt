@@ -14,6 +14,7 @@ class TrackHistoryRepositoryImpl(
 
     companion object {
         private const val SEARCH_HISTORY_KEY = "search_history"
+        private const val LAST_PLAYED_KEY = "last_played_track"
         private const val MAX_HISTORY_SIZE = 10
     }
 
@@ -46,5 +47,17 @@ class TrackHistoryRepositoryImpl(
     private fun saveHistory(history: List<Track>) {
         val json = gson.toJson(history)
         sharedPrefs.edit().putString(SEARCH_HISTORY_KEY, json).apply()
+    }
+
+    override fun saveLastPlayedTrack(track: Track) {
+        val json = gson.toJson(track)
+        sharedPrefs.edit()
+            .putString(LAST_PLAYED_KEY, json)
+            .apply()
+    }
+
+    override fun getLastPlayedTrack(): Track? {
+        val json = sharedPrefs.getString(LAST_PLAYED_KEY, null)
+        return json?.let { gson.fromJson(it, Track::class.java) }
     }
 }

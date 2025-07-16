@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.models.AudioPlayer
+import com.example.playlistmaker.domain.api.AudioPlayer
 
 class AudioPlayerImpl : AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null

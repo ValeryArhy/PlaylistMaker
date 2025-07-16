@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.use_case
 
-import com.example.playlistmaker.domain.models.AudioPlayer
+import com.example.playlistmaker.domain.api.AudioPlayer
 
 class TrackPlayerUseCase(private val audioPlayer: AudioPlayer) {
     fun prepare(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit) =

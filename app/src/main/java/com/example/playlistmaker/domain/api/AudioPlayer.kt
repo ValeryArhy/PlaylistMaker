@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.models
+package com.example.playlistmaker.domain.api
 
 interface AudioPlayer {
     fun prepare(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit)

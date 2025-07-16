@@ -15,6 +15,9 @@ interface TracksInteractor {
 
     fun clearHistory()
 
+    fun saveLastPlayedTrack(track: Track)
+    fun getLastPlayedTrack(): Track?
+
     interface TracksConsumer {
         fun consume(tracks: List<Track>)
         fun onError(error: Throwable)

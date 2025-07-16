@@ -16,10 +16,8 @@ import com.example.playlistmaker.getFormattedTime
 
 
 class TrackAdapter(
-    private val onTrackClick: (Track) -> Unit = {},
-    private val onHistoryClick: (Track) -> Unit = {}
+    private val onTrackClick: (Track) -> Unit = {}
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
-
     private val items = mutableListOf<SearchItem.TrackItem>()
 
     fun submitList(newItems: List<SearchItem.TrackItem>) {
@@ -29,9 +27,8 @@ class TrackAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.track_item, parent, false)
-        return TrackViewHolder(view, onTrackClick, onHistoryClick)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
+        return TrackViewHolder(view, onTrackClick)
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -42,10 +39,8 @@ class TrackAdapter(
 
     class TrackViewHolder(
         itemView: View,
-        private val onTrackClick: (Track) -> Unit,
-        private val onHistoryClick: (Track) -> Unit
+        private val onTrackClick: (Track) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
-
         private val trackName: TextView = itemView.findViewById(R.id.trackName)
         private val artistName: TextView = itemView.findViewById(R.id.artistName)
         private val trackTime: TextView = itemView.findViewById(R.id.trackTime)
@@ -64,7 +59,7 @@ class TrackAdapter(
                 .into(artwork)
 
             itemView.setOnClickListener {
-                if (item.fromHistory) onHistoryClick(track) else onTrackClick(track)
+                onTrackClick(track)
             }
         }
     }
