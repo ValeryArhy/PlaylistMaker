@@ -114,7 +114,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="102dp"
-                android:src="@drawable/search_null" />
+                android:src="@drawable/search_null"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/no_found"
+                style="@style/TextView.Medium.19.black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/nothing_found"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/placeholder_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="102dp"
+                android:src="@drawable/error_internet"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/placeholder_message"
@@ -123,17 +142,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/no_connection" />
+                android:text="@string/no_connection"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/update_button"
                 style="@style/ButtonStyleBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/update" />
+                android:text="@string/update"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
-
-
