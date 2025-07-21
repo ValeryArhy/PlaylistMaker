@@ -1,16 +1,16 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
-import com.example.playlistmaker.data.ThemeRepositoryImpl
-import com.example.playlistmaker.data.TrackHistoryRepositoryImpl
-import com.example.playlistmaker.data.network.TracksRepositoryImpl
-import com.example.playlistmaker.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.domain.ThemeInteractor
-import com.example.playlistmaker.domain.api.ThemeRepository
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.api.TracksRepository
-import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.settings.data.ThemeRepositoryImpl
+import com.example.playlistmaker.search.data.TrackHistoryRepositoryImpl
+import com.example.playlistmaker.search.data.network.TracksRepositoryImpl
+import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.settings.domain.usecase.ThemeInteractor
+import com.example.playlistmaker.settings.domain.repository.ThemeRepository
+import com.example.playlistmaker.search.domain.repository.TrackHistoryRepository
+import com.example.playlistmaker.search.domain.api.TracksInteractor
+import com.example.playlistmaker.search.domain.repository.TracksRepository
+import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
 
 object Creator {
 
