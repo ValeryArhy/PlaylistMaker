@@ -1,23 +1,20 @@
 package com.example.playlistmaker.player.ui
-
 import android.os.Bundle
-import android.os.Looper.prepare
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.player.data.AudioPlayerImpl
-import com.example.playlistmaker.search.data.TrackHistoryRepositoryImpl
-import com.example.playlistmaker.databinding.ActivityMediaBinding
-import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.player.domain.usecase.GetLastTrackUseCase
-import com.example.playlistmaker.player.domain.usecase.SaveLastTrackUseCase
-import com.example.playlistmaker.player.domain.usecase.TrackPlayerUseCase
 import com.example.playlistmaker.app.dpToPx
 import com.example.playlistmaker.app.getCoverArtwork
 import com.example.playlistmaker.app.getFormattedTime
 import com.example.playlistmaker.app.getYearFromReleaseDate
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
+import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
+import com.example.playlistmaker.search.domain.model.Track
+
 
 
 class MediaActivity : AppCompatActivity() {
@@ -28,20 +25,17 @@ class MediaActivity : AppCompatActivity() {
     private lateinit var getLastTrackUseCase: GetLastTrackUseCase
     private lateinit var saveLastTrackUseCase: SaveLastTrackUseCase
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPrefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val trackHistoryRepository = TrackHistoryRepositoryImpl(sharedPrefs)
 
-        getLastTrackUseCase = GetLastTrackUseCase(trackHistoryRepository)
-        saveLastTrackUseCase = SaveLastTrackUseCase(trackHistoryRepository)
+        getLastTrackUseCase = Creator.provideGetLastTrackUseCase()
+        saveLastTrackUseCase = Creator.provideSaveLastTrackUseCase()
 
-        val audioPlayer = AudioPlayerImpl()
-        val playerUseCase = TrackPlayerUseCase(audioPlayer)
+        val playerUseCase = Creator.provideTrackPlayerUseCase()
+
         viewModel = ViewModelProvider(this, MediaViewModelFactory(playerUseCase))[MediaViewModel::class.java]
 
         val trackFromIntent = intent.getSerializableExtra("track") as? Track
@@ -61,7 +55,6 @@ class MediaActivity : AppCompatActivity() {
         binding.play.setOnClickListener { viewModel.togglePlayPause() }
         binding.menuButton.setOnClickListener { finish() }
     }
-
     private fun setupUI(track: Track) {
         binding.trackName.text = track.name
         binding.artistName.text = track.artist

@@ -1,6 +1,14 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
+import com.example.playlistmaker.player.api.AudioPlayer
+import com.example.playlistmaker.player.data.AudioPlayerImpl
+import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
+import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
+import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
+import com.example.playlistmaker.player.domain.impl.GetLastTrackUseCaseImpl
+import com.example.playlistmaker.player.domain.impl.SaveLastTrackUseCaseImpl
+import com.example.playlistmaker.player.domain.impl.TrackPlayerUseCaseImpl
 import com.example.playlistmaker.settings.data.ThemeRepositoryImpl
 import com.example.playlistmaker.search.data.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.search.data.network.TracksRepositoryImpl
@@ -34,6 +42,22 @@ object Creator {
             provideTracksRepository(),
             provideTrackHistoryRepository()
         )
+    }
+
+    fun provideAudioPlayer(): AudioPlayer {
+        return AudioPlayerImpl()
+    }
+
+    fun provideGetLastTrackUseCase(): GetLastTrackUseCase {
+        return GetLastTrackUseCaseImpl(provideTrackHistoryRepository())
+    }
+
+    fun provideSaveLastTrackUseCase(): SaveLastTrackUseCase {
+        return SaveLastTrackUseCaseImpl(provideTrackHistoryRepository())
+    }
+
+    fun provideTrackPlayerUseCase(): TrackPlayerUseCase {
+        return TrackPlayerUseCaseImpl(provideAudioPlayer())
     }
 
     fun provideThemeRepository(): ThemeRepository {

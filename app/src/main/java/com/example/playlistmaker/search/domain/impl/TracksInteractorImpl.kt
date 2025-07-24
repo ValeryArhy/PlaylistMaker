@@ -1,8 +1,5 @@
 package com.example.playlistmaker.search.domain.impl
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import com.example.playlistmaker.search.domain.repository.TrackHistoryRepository
 import com.example.playlistmaker.search.domain.api.TracksInteractor
 import com.example.playlistmaker.search.domain.repository.TracksRepository
@@ -17,44 +14,26 @@ class TracksInteractorImpl(
 
     private val executor = Executors.newCachedThreadPool()
 
-    override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
-        Log.d("TracksInteractor", "Запущен поиск: $expression")
+    override fun searchTracks(expression: String, callback: (Result<List<Track>>) -> Unit) {
         executor.execute {
             try {
-                val result = tracksRepository.searchTracks(expression)
-                Log.d("TracksInteractor", "Результат поиска получен")
-                Handler(Looper.getMainLooper()).post {
-                    when (result) {
-                        is SearchResult.Success -> {
-                            Log.d("TracksInteractor", "Найдено: ${result.tracks.size}")
-                            consumer.consume(result.tracks)
-                        }
-                        is SearchResult.Error -> {
-                            Log.e("TracksInteractor", "Ошибка в результате поиска")
-                            consumer.onError(Exception("Search failed"))
-                        }
-                    }
+                when (val result = tracksRepository.searchTracks(expression)) {
+                    is SearchResult.Success -> callback(Result.success(result.tracks))
+                    is SearchResult.Error -> callback(Result.failure(Exception("Search failed")))
                 }
             } catch (e: Exception) {
-                Log.e("TracksInteractor", "Исключение при поиске", e)
-                Handler(Looper.getMainLooper()).post {
-                    consumer.onError(e)
-                }
+                callback(Result.failure(e))
             }
         }
     }
 
-    override fun loadHistory(consumer: TracksInteractor.TracksConsumer) {
+    override fun loadHistory(callback: (Result<List<Track>>) -> Unit) {
         executor.execute {
             try {
                 val history = historyRepository.getHistory()
-                Handler(Looper.getMainLooper()).post {
-                    consumer.consume(history)
-                }
+                callback(Result.success(history))
             } catch (e: Exception) {
-                Handler(Looper.getMainLooper()).post {
-                    consumer.onError(e)
-                }
+                callback(Result.failure(e))
             }
         }
     }

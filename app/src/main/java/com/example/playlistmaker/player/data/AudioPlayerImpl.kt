@@ -7,11 +7,13 @@ class AudioPlayerImpl : AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null
 
     override fun prepare(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit) {
+        release()
+
         mediaPlayer = MediaPlayer().apply {
             setDataSource(url)
-            prepareAsync()
             setOnPreparedListener { onPrepared() }
             setOnCompletionListener { onCompletion() }
+            prepareAsync()
         }
     }
 

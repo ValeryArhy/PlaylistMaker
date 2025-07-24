@@ -5,7 +5,7 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.player.domain.usecase.TrackPlayerUseCase
+import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
 import com.example.playlistmaker.app.formatTime
 
 

@@ -14,8 +14,7 @@ class SearchViewModel(
     private val _uiState = MutableLiveData<SearchUiState>()
     val uiState: LiveData<SearchUiState> = _uiState
 
-    private var currentQuery: String = ""
-
+    var currentQuery: String = ""  // делаем var, чтобы можно было обновлять из SearchActivity
 
     fun searchTracks(query: String) {
         currentQuery = query.trim()
@@ -25,33 +24,32 @@ class SearchViewModel(
             return
         }
 
-        _uiState.value = SearchUiState.Loading
+        _uiState.postValue(SearchUiState.Loading)
 
-        interactor.searchTracks(query, object : TracksInteractor.TracksConsumer {
-            override fun consume(tracks: List<Track>) {
-                _uiState.value = if (tracks.isEmpty()) {
-                    SearchUiState.Empty
-                } else {
-                    SearchUiState.Content(tracks)
+        interactor.searchTracks(currentQuery) { result ->
+            result
+                .onSuccess { tracks ->
+                    _uiState.postValue(
+                        if (tracks.isEmpty()) SearchUiState.Empty
+                        else SearchUiState.Content(tracks)
+                    )
                 }
-            }
-
-            override fun onError(error: Throwable) {
-                _uiState.value = SearchUiState.Error
-            }
-        })
+                .onFailure {
+                    _uiState.postValue(SearchUiState.Error)
+                }
+        }
     }
 
     fun loadHistory() {
-        interactor.loadHistory(object : TracksInteractor.TracksConsumer {
-            override fun consume(tracks: List<Track>) {
-                _uiState.value = SearchUiState.History(tracks)
-            }
-
-            override fun onError(error: Throwable) {
-                _uiState.value = SearchUiState.History(emptyList())
-            }
-        })
+        interactor.loadHistory { result ->
+            result
+                .onSuccess { history ->
+                    _uiState.postValue(SearchUiState.History(history))
+                }
+                .onFailure {
+                    _uiState.postValue(SearchUiState.History(emptyList()))
+                }
+        }
     }
 
     fun saveTrackToHistory(track: Track) {
@@ -61,10 +59,19 @@ class SearchViewModel(
 
     fun clearHistory() {
         interactor.clearHistory()
-        _uiState.value = SearchUiState.History(emptyList())
+        _uiState.postValue(SearchUiState.History(emptyList()))
     }
 
     fun retrySearch() {
         searchTracks(currentQuery)
+    }
+
+    // Вот этот метод вызывай из SearchActivity при восстановлении экрана
+    fun restoreLastState() {
+        if (currentQuery.isNotEmpty()) {
+            searchTracks(currentQuery)
+        } else {
+            loadHistory()
+        }
     }
 }
