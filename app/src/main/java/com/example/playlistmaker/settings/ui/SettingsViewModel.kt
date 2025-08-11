@@ -3,7 +3,7 @@ package com.example.playlistmaker.settings.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.settings.domain.usecase.ThemeInteractor
+import com.example.playlistmaker.settings.domain.impl.ThemeInteractor
 
 class SettingsViewModel(
     private val themeInteractor: ThemeInteractor

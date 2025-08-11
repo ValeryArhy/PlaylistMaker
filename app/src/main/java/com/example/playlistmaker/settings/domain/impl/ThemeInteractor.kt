@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings.domain.usecase
+package com.example.playlistmaker.settings.domain.impl
 
 import com.example.playlistmaker.settings.domain.repository.ThemeRepository
 

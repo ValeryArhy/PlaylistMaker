@@ -1,9 +1,12 @@
 package com.example.playlistmaker.app
 
 import android.app.Application
+import com.example.playlistmaker.di.*
+import com.example.playlistmaker.settings.domain.impl.ThemeInteractor
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.java.KoinJavaComponent.inject
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.creator.Creator
-
 
 class App : Application() {
 
@@ -15,9 +18,19 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Creator.init(this)
 
-        val themeInteractor = Creator.provideThemeInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(
+                appModule,
+                searchModule,
+                playerModule,
+                settingsModule
+            )
+        }
+
+
+        val themeInteractor: ThemeInteractor by inject(ThemeInteractor::class.java)
         val isDark = themeInteractor.isDarkTheme()
 
         AppCompatDelegate.setDefaultNightMode(

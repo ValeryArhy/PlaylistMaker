@@ -1,14 +1,11 @@
 package com.example.playlistmaker.search.ui
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.MediaActivity
 import com.example.playlistmaker.search.presentation.SearchItem
@@ -16,25 +13,17 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.example.playlistmaker.search.presentation.SearchUiState
 import com.example.playlistmaker.search.presentation.viewmodel.SearchViewModel
-import com.example.playlistmaker.search.presentation.viewmodel.SearchViewModelFactory
 
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
+    private val viewModel: SearchViewModel by viewModel()
 
-    private val viewModel: SearchViewModel by viewModels {
-        SearchViewModelFactory(Creator.provideTracksInteractor())
-    }
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var latestSearchQuery: String = ""
-    private val searchRunnable = Runnable { viewModel.searchTracks(latestSearchQuery) }
-
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val SAVED_QUERY_KEY = "search_query"
     }
 
@@ -46,28 +35,17 @@ class SearchActivity : AppCompatActivity() {
         setupToolbar()
         setupRecyclerViews()
         setupSearchInput()
-        setupObservers()
+        observeUiState()
 
-        val savedQuery = savedInstanceState?.getString(SAVED_QUERY_KEY).orEmpty()
-        binding.queryInput.setText(savedQuery)
-        latestSearchQuery = savedQuery
-        viewModel.currentQuery = savedQuery
-
-        if (savedQuery.isNotEmpty()) {
-            viewModel.restoreLastState()
-        } else {
-            viewModel.loadHistory()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.restoreLastState()
+        savedInstanceState?.getString(SAVED_QUERY_KEY)?.let {
+            binding.queryInput.setText(it)
+            viewModel.onQueryChanged(it)
+        } ?: viewModel.restoreLastState()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SAVED_QUERY_KEY, viewModel.currentQuery)
+        outState.putString(SAVED_QUERY_KEY, binding.queryInput.text?.toString().orEmpty())
     }
 
     private fun setupToolbar() {
@@ -79,29 +57,21 @@ class SearchActivity : AppCompatActivity() {
             viewModel.saveTrackToHistory(track)
             navigateToMediaActivity(track)
         }
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@SearchActivity)
-            adapter = searchAdapter
-        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = searchAdapter
 
         historyAdapter = TrackAdapter { track ->
             navigateToMediaActivity(track)
         }
-        binding.historyRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@SearchActivity)
-            adapter = historyAdapter
-        }
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.historyRecyclerView.adapter = historyAdapter
     }
 
     private fun setupSearchInput() {
         binding.queryInput.doAfterTextChanged { text ->
             val query = text?.toString().orEmpty()
             binding.iconClear.isVisible = query.isNotEmpty()
-
-            handler.removeCallbacks(searchRunnable)
-            latestSearchQuery = query
-            viewModel.currentQuery = query
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+            viewModel.onQueryChanged(query)
         }
         binding.iconClear.setOnClickListener {
             binding.queryInput.text?.clear()
@@ -114,7 +84,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupObservers() {
+    private fun observeUiState() {
         viewModel.uiState.observe(this) { state ->
             hideAll()
 
@@ -143,8 +113,6 @@ class SearchActivity : AppCompatActivity() {
 
                 is SearchUiState.Error -> {
                     binding.placeholderContainer.isVisible = true
-                    binding.placeholderImage.isVisible = false
-                    binding.noFound.isVisible = false
                     binding.placeholderError.isVisible = true
                     binding.placeholderMessage.isVisible = true
                     binding.updateButton.isVisible = true
@@ -161,13 +129,15 @@ class SearchActivity : AppCompatActivity() {
             historyRecyclerView.isVisible = false
             clearHistory.isVisible = false
             placeholderContainer.isVisible = false
+            placeholderImage.isVisible = false
+            placeholderError.isVisible = false
+            placeholderMessage.isVisible = false
+            updateButton.isVisible = false
+            noFound.isVisible = false
         }
     }
 
     private fun navigateToMediaActivity(track: Track) {
-        startActivity(
-            Intent(this, MediaActivity::class.java)
-                .putExtra("track", track)
-        )
+        startActivity(Intent(this, MediaActivity::class.java).putExtra("track", track))
     }
 }

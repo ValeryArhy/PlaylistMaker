@@ -1,0 +1,50 @@
+package com.example.playlistmaker.di
+
+import com.example.playlistmaker.search.data.TrackHistoryRepositoryImpl
+import com.example.playlistmaker.search.data.network.ItunesAPI
+import com.example.playlistmaker.search.data.network.NetworkClient
+import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.search.data.network.TracksRepositoryImpl
+import com.example.playlistmaker.search.domain.api.TracksInteractor
+import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.search.domain.repository.TrackHistoryRepository
+import com.example.playlistmaker.search.domain.repository.TracksRepository
+import com.example.playlistmaker.search.presentation.viewmodel.SearchViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+val searchModule = module {
+
+    single {
+        Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ItunesAPI::class.java)
+    }
+
+    single<NetworkClient> {
+        RetrofitNetworkClient(get())
+    }
+
+    single<TracksRepository> {
+        TracksRepositoryImpl(get())
+    }
+
+    single<TrackHistoryRepository> {
+        TrackHistoryRepositoryImpl(
+            androidContext().getSharedPreferences("playlist_prefs", android.content.Context.MODE_PRIVATE)
+        )
+    }
+
+    single<TracksInteractor> {
+        TracksInteractorImpl(get(), get())
+    }
+
+    viewModel {
+        SearchViewModel(get())
+    }
+}
