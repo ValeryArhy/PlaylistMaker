@@ -23,9 +23,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
-    companion object {
-        private const val SAVED_QUERY_KEY = "search_query"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,5 +136,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun navigateToMediaActivity(track: Track) {
         startActivity(Intent(this, MediaActivity::class.java).putExtra("track", track))
+    }
+    companion object {
+        private const val SAVED_QUERY_KEY = "search_query"
     }
 }

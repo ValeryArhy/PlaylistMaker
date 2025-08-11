@@ -38,9 +38,10 @@ class TracksInteractorImpl(
         }
     }
 
-    override fun saveTrack(track: Track) {
+    override fun saveTrack(track: Track, callback: () -> Unit) {
         executor.execute {
             historyRepository.saveTrack(track)
+            callback()
         }
     }
 

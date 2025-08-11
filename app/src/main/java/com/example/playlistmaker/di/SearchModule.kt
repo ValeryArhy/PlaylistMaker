@@ -26,21 +26,19 @@ val searchModule = module {
             .create(ItunesAPI::class.java)
     }
 
-    single<NetworkClient> {
+    factory<NetworkClient> {
         RetrofitNetworkClient(get())
     }
 
-    single<TracksRepository> {
+    factory<TracksRepository> {
         TracksRepositoryImpl(get())
     }
 
-    single<TrackHistoryRepository> {
-        TrackHistoryRepositoryImpl(
-            androidContext().getSharedPreferences("playlist_prefs", android.content.Context.MODE_PRIVATE)
-        )
+    factory<TrackHistoryRepository> {
+        TrackHistoryRepositoryImpl(get(), get())
     }
 
-    single<TracksInteractor> {
+    factory<TracksInteractor> {
         TracksInteractorImpl(get(), get())
     }
 

@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -11,4 +12,6 @@ val appModule = module {
         androidContext().getSharedPreferences("playlist_prefs", Context.MODE_PRIVATE)
     }
     single { Gson() }
+    factory { MediaPlayer() }
+
 }

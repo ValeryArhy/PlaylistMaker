@@ -21,9 +21,6 @@ class SearchViewModel(
     private var searchJob: Job? = null
     private var currentQuery: String = ""
 
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 
     fun onQueryChanged(query: String) {
         currentQuery = query.trim()
@@ -69,8 +66,9 @@ class SearchViewModel(
     }
 
     fun saveTrackToHistory(track: Track) {
-        interactor.saveTrack(track)
-        loadHistory()
+        interactor.saveTrack(track) {
+            loadHistory()
+        }
     }
 
     fun clearHistory() {
@@ -90,5 +88,8 @@ class SearchViewModel(
         } else {
             loadHistory()
         }
+    }
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

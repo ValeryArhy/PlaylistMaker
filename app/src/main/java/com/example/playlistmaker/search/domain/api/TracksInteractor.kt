@@ -5,7 +5,7 @@ import com.example.playlistmaker.search.domain.model.Track
 interface TracksInteractor {
     fun searchTracks(expression: String, callback: (Result<List<Track>>) -> Unit)
     fun loadHistory(callback: (Result<List<Track>>) -> Unit)
-    fun saveTrack(track: Track)
+    fun saveTrack(track: Track, callback: () -> Unit)
     fun clearHistory()
     fun saveLastPlayedTrack(track: Track)
     fun getLastPlayedTrack(): Track?

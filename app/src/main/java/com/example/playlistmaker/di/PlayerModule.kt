@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import android.media.MediaPlayer
 import com.example.playlistmaker.player.api.AudioPlayer
 import com.example.playlistmaker.player.data.AudioPlayerImpl
 import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
@@ -13,11 +14,13 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val playerModule = module {
-    single<AudioPlayer> { AudioPlayerImpl() }
 
-    single<GetLastTrackUseCase> { GetLastTrackUseCaseImpl(get()) }
-    single<SaveLastTrackUseCase> { SaveLastTrackUseCaseImpl(get()) }
-    single<TrackPlayerUseCase> { TrackPlayerUseCaseImpl(get()) }
+    factory { { MediaPlayer() } }
+    single<AudioPlayer> { AudioPlayerImpl(get()) }
+
+    factory<GetLastTrackUseCase> { GetLastTrackUseCaseImpl(get()) }
+    factory<SaveLastTrackUseCase> { SaveLastTrackUseCaseImpl(get()) }
+    factory<TrackPlayerUseCase> { TrackPlayerUseCaseImpl(get()) }
 
     viewModel { MediaViewModel(get()) }
 }

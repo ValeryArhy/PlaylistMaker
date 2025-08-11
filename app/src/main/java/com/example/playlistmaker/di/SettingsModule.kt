@@ -9,10 +9,10 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 
 val settingsModule = module {
 
-    single<ThemeRepository> { ThemeRepositoryImpl(get()) }
+    factory<ThemeRepository> { ThemeRepositoryImpl(get()) }
 
 
-    single { ThemeInteractor(get()) }
+    factory { ThemeInteractor(get()) }
 
 
     viewModel { SettingsViewModel(get()) }
