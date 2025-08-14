@@ -23,6 +23,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
+    private var isFirstLaunch = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,15 +36,36 @@ class SearchActivity : AppCompatActivity() {
         setupSearchInput()
         observeUiState()
 
-        savedInstanceState?.getString(SAVED_QUERY_KEY)?.let {
-            binding.queryInput.setText(it)
-            viewModel.onQueryChanged(it)
+        savedInstanceState?. let { bundle ->
+            val savedQuery = bundle.getString(SAVED_QUERY_KEY, "")
+            @Suppress("UNCHECKED_CAST")
+            val savedTracks = bundle.getSerializable(SAVED_TRACKS_KEY) as? ArrayList<Track>
+
+            if (!savedQuery.isNullOrEmpty() && !savedTracks.isNullOrEmpty()) {
+                viewModel.restoreFromSavedState(savedQuery, savedTracks)
+            } else {
+                viewModel.restoreLastState()
+            }
         } ?: viewModel.restoreLastState()
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirstLaunch) {
+            viewModel.restoreLastState()
+        }
+        isFirstLaunch = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_QUERY_KEY, binding.queryInput.text?.toString().orEmpty())
+
+        (viewModel.uiState.value as? SearchUiState.Content)?.let { contentState ->
+            outState.putSerializable(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
+        }
     }
 
     private fun setupToolbar() {
@@ -139,5 +162,6 @@ class SearchActivity : AppCompatActivity() {
     }
     companion object {
         private const val SAVED_QUERY_KEY = "search_query"
+        private const val SAVED_TRACKS_KEY = "saved_tracks"
     }
 }

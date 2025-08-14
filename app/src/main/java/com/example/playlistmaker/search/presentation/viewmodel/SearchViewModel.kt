@@ -20,6 +20,7 @@ class SearchViewModel(
 
     private var searchJob: Job? = null
     private var currentQuery: String = ""
+    private var lastFoundTracks: List<Track>? = null
 
 
     fun onQueryChanged(query: String) {
@@ -42,6 +43,7 @@ class SearchViewModel(
         interactor.searchTracks(query) { result ->
             result
                 .onSuccess { tracks ->
+                    lastFoundTracks = tracks
                     _uiState.postValue(
                         if (tracks.isEmpty()) SearchUiState.Empty
                         else SearchUiState.Content(tracks)
@@ -83,11 +85,23 @@ class SearchViewModel(
     }
 
     fun restoreLastState() {
-        if (currentQuery.isNotEmpty()) {
-            searchTracks(currentQuery)
-        } else {
-            loadHistory()
+        when {
+            !lastFoundTracks.isNullOrEmpty() -> {
+                _uiState.value = SearchUiState.Content(lastFoundTracks!!)
+            }
+            currentQuery.isNotEmpty() -> {
+                searchTracks(currentQuery)
+            }
+            else -> {
+                loadHistory()
+            }
         }
+    }
+
+    fun restoreFromSavedState(query: String, tracks: List<Track>) {
+        currentQuery = query
+        lastFoundTracks = tracks
+        _uiState.value = SearchUiState.Content(tracks)
     }
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
