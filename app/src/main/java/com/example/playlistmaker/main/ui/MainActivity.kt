@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.ui.MediaActivity
+import com.example.playlistmaker.player.ui.MediaLibraryActivity
 import com.example.playlistmaker.search.ui.SearchActivity
 import com.example.playlistmaker.settings.ui.SettingsActivity
 
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mediaButton.setOnClickListener {
-            val displayIntent = Intent(this, MediaActivity::class.java)
+            val displayIntent = Intent(this, MediaLibraryActivity::class.java)
             startActivity(displayIntent)
         }
 

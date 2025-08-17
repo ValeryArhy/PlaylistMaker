@@ -23,6 +23,11 @@
         </activity>
 
         <activity
+            android:name=".player.ui.MediaLibraryActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".settings.ui.SettingsActivity"
             android:exported="false">
         </activity>
