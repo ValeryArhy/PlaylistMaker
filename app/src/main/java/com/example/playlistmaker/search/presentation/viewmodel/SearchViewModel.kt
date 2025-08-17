@@ -3,32 +3,47 @@ package com.example.playlistmaker.search.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.api.TracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.presentation.SearchUiState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val interactor: TracksInteractor
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<SearchUiState>()
-    val uiState: LiveData<SearchUiState> = _uiState
+    val uiState: LiveData<SearchUiState> get() = _uiState
 
-    var currentQuery: String = ""  // делаем var, чтобы можно было обновлять из SearchActivity
+    private var searchJob: Job? = null
+    private var currentQuery: String = ""
+    private var lastFoundTracks: List<Track>? = null
 
-    fun searchTracks(query: String) {
+
+    fun onQueryChanged(query: String) {
         currentQuery = query.trim()
 
-        if (currentQuery.isEmpty()) {
-            loadHistory()
-            return
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            if (currentQuery.isEmpty()) {
+                loadHistory()
+            } else {
+                searchTracks(currentQuery)
+            }
         }
+    }
 
-        _uiState.postValue(SearchUiState.Loading)
+    private fun searchTracks(query: String) {
+        _uiState.value = SearchUiState.Loading
 
-        interactor.searchTracks(currentQuery) { result ->
+        interactor.searchTracks(query) { result ->
             result
                 .onSuccess { tracks ->
+                    lastFoundTracks = tracks
                     _uiState.postValue(
                         if (tracks.isEmpty()) SearchUiState.Empty
                         else SearchUiState.Content(tracks)
@@ -53,8 +68,9 @@ class SearchViewModel(
     }
 
     fun saveTrackToHistory(track: Track) {
-        interactor.saveTrack(track)
-        loadHistory()
+        interactor.saveTrack(track) {
+            loadHistory()
+        }
     }
 
     fun clearHistory() {
@@ -63,15 +79,31 @@ class SearchViewModel(
     }
 
     fun retrySearch() {
-        searchTracks(currentQuery)
-    }
-
-    // Вот этот метод вызывай из SearchActivity при восстановлении экрана
-    fun restoreLastState() {
         if (currentQuery.isNotEmpty()) {
             searchTracks(currentQuery)
-        } else {
-            loadHistory()
         }
+    }
+
+    fun restoreLastState() {
+        when {
+            !lastFoundTracks.isNullOrEmpty() -> {
+                _uiState.value = SearchUiState.Content(lastFoundTracks!!)
+            }
+            currentQuery.isNotEmpty() -> {
+                searchTracks(currentQuery)
+            }
+            else -> {
+                loadHistory()
+            }
+        }
+    }
+
+    fun restoreFromSavedState(query: String, tracks: List<Track>) {
+        currentQuery = query
+        lastFoundTracks = tracks
+        _uiState.value = SearchUiState.Content(tracks)
+    }
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
