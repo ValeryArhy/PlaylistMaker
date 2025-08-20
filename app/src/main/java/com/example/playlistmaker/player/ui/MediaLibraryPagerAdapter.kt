@@ -10,8 +10,8 @@ class MediaLibraryPagerAdapter(activity: FragmentActivity) : FragmentStateAdapte
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FavoritesFragment()
-            1 -> PlaylistsFragment()
+            0 -> FavoritesFragment.newInstance()
+            1 -> PlaylistsFragment.newInstance()
             else -> throw IllegalStateException("Unexpected position: $position")
         }
     }

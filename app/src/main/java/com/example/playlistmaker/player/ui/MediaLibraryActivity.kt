@@ -21,7 +21,7 @@ class MediaLibraryActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> ""
+                0 -> "Избранные треки"
                 1 -> "Плейлисты"
                 else -> null
             }

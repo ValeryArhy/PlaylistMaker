@@ -26,12 +26,17 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.createPlaylistButton.setOnClickListener {
+        binding.newPlaylistButton.setOnClickListener {
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    companion object {
+        fun newInstance(): PlaylistsFragment{
+            return PlaylistsFragment()
+        }
     }
 }

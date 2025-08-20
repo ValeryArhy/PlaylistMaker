@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="?attr/colorPrimary">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -18,10 +18,9 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-
-        app:tabTextColor="@color/black"
-        app:tabIndicatorColor="@color/black"/>
+        style="@style/CustomTabText"
+        android:background="?attr/colorPrimary"
+        app:tabTextAppearance="@style/CustomTabText"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
