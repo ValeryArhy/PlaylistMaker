@@ -25,7 +25,8 @@ class App : Application() {
                 appModule,
                 searchModule,
                 playerModule,
-                settingsModule
+                settingsModule,
+                mediaLibraryModule
             )
         }
 
