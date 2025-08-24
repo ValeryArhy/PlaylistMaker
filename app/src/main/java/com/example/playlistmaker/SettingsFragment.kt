@@ -1,30 +1,42 @@
-package com.example.playlistmaker.settings.ui
+package com.example.playlistmaker
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.R
+import androidx.fragment.app.Fragment
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
+import com.example.playlistmaker.settings.ui.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
-class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySettingsBinding
+class SettingsFragment : Fragment() {
+
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: SettingsViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupUI()
         observeViewModel()
     }
+
     private fun setupUI() {
-        binding.toolbar.setNavigationOnClickListener { finish() }
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             viewModel.switchTheme(isChecked)
@@ -56,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.isDarkTheme.observe(this) { isDark ->
+        viewModel.isDarkTheme.observe(viewLifecycleOwner) { isDark ->
             binding.themeSwitcher.isChecked = isDark
         }
     }
@@ -66,5 +78,10 @@ class SettingsActivity : AppCompatActivity() {
             if (isDark) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
