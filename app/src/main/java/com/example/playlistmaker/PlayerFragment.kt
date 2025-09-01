@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.app.dpToPx
@@ -42,8 +43,7 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        track = arguments?.getSerializable("track") as? Track ?: getLastTrackUseCase.execute()
-
+        track = arguments?.getParcelable("track") ?: getLastTrackUseCase.execute()
         if (track == null) {
             parentFragmentManager.popBackStack()
             return
@@ -55,7 +55,7 @@ class PlayerFragment : Fragment() {
         saveLastTrackUseCase.execute(track!!)
 
         binding.play.setOnClickListener { viewModel.togglePlayPause() }
-        binding.menuButton.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.menuButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     private fun setupUI(track: Track) {
@@ -96,7 +96,7 @@ class PlayerFragment : Fragment() {
 
     companion object {
         fun newInstance(track: Track?): PlayerFragment = PlayerFragment().apply {
-            arguments = Bundle().apply { putSerializable("track", track) }
+            arguments = Bundle().apply { putParcelable("track", track) }
         }
     }
 }

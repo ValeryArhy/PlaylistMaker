@@ -32,8 +32,8 @@ class MediaLibraryFragment : Fragment() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Избранные треки"
-                1 -> "Плейлисты"
+                0 -> getString(R.string.favorites_track)
+                1 -> getString(R.string.playlists)
                 else -> null
             }
         }.attach()

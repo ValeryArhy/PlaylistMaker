@@ -48,9 +48,8 @@ class SearchFragment : Fragment() {
 
         if (savedInstanceState != null) {
             val savedQuery = savedInstanceState.getString(SAVED_QUERY_KEY, "")
-            @Suppress("UNCHECKED_CAST")
             val savedTracks =
-                savedInstanceState.getSerializable(SAVED_TRACKS_KEY) as? ArrayList<Track>
+                savedInstanceState.getParcelableArrayList<Track>(SAVED_TRACKS_KEY)
 
             if (!savedQuery.isNullOrEmpty() && !savedTracks.isNullOrEmpty()) {
                 viewModel.restoreFromSavedState(savedQuery, savedTracks)
@@ -75,7 +74,7 @@ class SearchFragment : Fragment() {
         outState.putString(SAVED_QUERY_KEY, binding.queryInput.text?.toString().orEmpty())
 
         (viewModel.uiState.value as? SearchUiState.Content)?.let { contentState ->
-            outState.putSerializable(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
+            outState.putParcelableArrayList(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
         }
     }
 
