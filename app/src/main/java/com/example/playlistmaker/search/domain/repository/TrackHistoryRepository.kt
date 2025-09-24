@@ -3,10 +3,9 @@ package com.example.playlistmaker.search.domain.repository
 import com.example.playlistmaker.search.domain.model.Track
 
 interface TrackHistoryRepository {
-    fun saveTrack(track: Track)
-    fun getHistory(): List<Track>
-    fun clearHistory()
-
-    fun saveLastPlayedTrack(track: Track)
-    fun getLastPlayedTrack(): Track?
+    suspend fun saveTrack(track: Track)
+    suspend fun getHistory(): List<Track>
+    suspend fun clearHistory()
+    suspend fun saveLastPlayedTrack(track: Track)
+    suspend fun getLastPlayedTrack(): Track?
 }

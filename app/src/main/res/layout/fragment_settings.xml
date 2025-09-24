@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    tools:context="com.example.playlistmaker.SettingsFragment">
+    tools:context="com.example.playlistmaker.settings.ui.SettingsFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"

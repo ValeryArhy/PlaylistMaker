@@ -1,12 +1,16 @@
 package com.example.playlistmaker.player.ui
 
-import android.os.Handler
-import android.os.Looper
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
 import com.example.playlistmaker.app.formatTime
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 
 class MediaViewModel(
@@ -19,13 +23,8 @@ class MediaViewModel(
     private val _trackPosition = MutableLiveData("00:00")
     val trackPosition: LiveData<String> = _trackPosition
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val updateTimer = object : Runnable {
-        override fun run() {
-            _trackPosition.value = formatTime(playerUseCase.getPosition())
-            handler.postDelayed(this, 200)
-        }
-    }
+    private var progressJob: Job? = null
+    private var lastPosition: Int = 0
 
     fun prepare(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit) {
         playerUseCase.prepare(url, {
@@ -34,7 +33,7 @@ class MediaViewModel(
         }, {
             _isPlaying.value = false
             _trackPosition.value = "00:00"
-            handler.removeCallbacks(updateTimer)
+            stopProgressUpdates()
             onCompletion()
         })
     }
@@ -42,13 +41,14 @@ class MediaViewModel(
     fun play() {
         playerUseCase.play()
         _isPlaying.value = true
-        handler.post(updateTimer)
+        startProgressUpdates()
     }
 
     fun pause() {
+        lastPosition = playerUseCase.getPosition()
         playerUseCase.pause()
         _isPlaying.value = false
-        handler.removeCallbacks(updateTimer)
+        stopProgressUpdates()
     }
 
     fun restart() {
@@ -62,7 +62,28 @@ class MediaViewModel(
 
     fun release() {
         playerUseCase.release()
-        handler.removeCallbacks(updateTimer)
+        stopProgressUpdates()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        playerUseCase.release()
+        stopProgressUpdates()
+    }
+
+
+    private fun startProgressUpdates() {
+        stopProgressUpdates()
+        progressJob = viewModelScope.launch {
+            while (isActive) {
+                _trackPosition.value = formatTime(playerUseCase.getPosition())
+                delay(300L)
+            }
+        }
+    }
+
+    private fun stopProgressUpdates() {
+        progressJob?.cancel()
+        progressJob = null
+    }
 }
