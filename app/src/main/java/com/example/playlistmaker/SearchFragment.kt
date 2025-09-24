@@ -1,54 +1,64 @@
-package com.example.playlistmaker.search.ui
-import android.content.Intent
+package com.example.playlistmaker
+
+
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.player.ui.MediaActivity
-import com.example.playlistmaker.search.presentation.SearchItem
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.ui.adapter.TrackAdapter
+import com.example.playlistmaker.search.presentation.SearchItem
 import com.example.playlistmaker.search.presentation.SearchUiState
 import com.example.playlistmaker.search.presentation.viewmodel.SearchViewModel
+import com.example.playlistmaker.search.ui.adapter.TrackAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class SearchFragment : Fragment() {
 
-class SearchActivity : AppCompatActivity() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var binding: ActivitySearchBinding
     private val viewModel: SearchViewModel by viewModel()
-
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
     private var isFirstLaunch = true
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         setupRecyclerViews()
         setupSearchInput()
         observeUiState()
 
-        savedInstanceState?. let { bundle ->
-            val savedQuery = bundle.getString(SAVED_QUERY_KEY, "")
-            @Suppress("UNCHECKED_CAST")
-            val savedTracks = bundle.getSerializable(SAVED_TRACKS_KEY) as? ArrayList<Track>
+        if (savedInstanceState != null) {
+            val savedQuery = savedInstanceState.getString(SAVED_QUERY_KEY, "")
+            val savedTracks =
+                savedInstanceState.getParcelableArrayList<Track>(SAVED_TRACKS_KEY)
 
             if (!savedQuery.isNullOrEmpty() && !savedTracks.isNullOrEmpty()) {
                 viewModel.restoreFromSavedState(savedQuery, savedTracks)
             } else {
                 viewModel.restoreLastState()
             }
-        } ?: viewModel.restoreLastState()
-
-
+        } else {
+            viewModel.restoreLastState()
+        }
     }
 
     override fun onResume() {
@@ -64,26 +74,29 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SAVED_QUERY_KEY, binding.queryInput.text?.toString().orEmpty())
 
         (viewModel.uiState.value as? SearchUiState.Content)?.let { contentState ->
-            outState.putSerializable(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
+            outState.putParcelableArrayList(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
         }
-    }
-
-    private fun setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun setupRecyclerViews() {
         searchAdapter = TrackAdapter { track ->
             viewModel.saveTrackToHistory(track)
-            navigateToMediaActivity(track)
-        }
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+            findNavController().navigate(
+                R.id.playerFragment,
+                bundleOf("track" to track)
+            )
+            }
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = searchAdapter
 
         historyAdapter = TrackAdapter { track ->
-            navigateToMediaActivity(track)
+            viewModel.saveTrackToHistory(track)
+            findNavController().navigate(
+                R.id.playerFragment,
+                bundleOf("track" to track)
+            )
         }
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.historyRecyclerView.adapter = historyAdapter
     }
 
@@ -105,7 +118,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun observeUiState() {
-        viewModel.uiState.observe(this) { state ->
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
             hideAll()
 
             when (state) {
@@ -157,11 +170,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToMediaActivity(track: Track) {
-        startActivity(Intent(this, MediaActivity::class.java).putExtra("track", track))
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
     companion object {
         private const val SAVED_QUERY_KEY = "search_query"
         private const val SAVED_TRACKS_KEY = "saved_tracks"
+
+        fun newInstance(): SearchFragment = SearchFragment()
     }
 }
