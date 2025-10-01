@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/mediaLibraryFragment"
-        android:name="com.example.playlistmaker.MediaLibraryFragment"
+        android:name="com.example.playlistmaker.player.ui.MediaLibraryFragment"
         android:label="fragment_media_library"
         tools:layout="@layout/fragment_media_library" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.playlistmaker.SettingsFragment"
+        android:name="com.example.playlistmaker.settings.ui.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.playlistmaker.SearchFragment"
+        android:name="com.example.playlistmaker.search.ui.adapter.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/playerFragment"
-        android:name="com.example.playlistmaker.PlayerFragment"
+        android:name="com.example.playlistmaker.player.ui.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
 </navigation>

@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.presentation.viewmodel
 
+
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.api.TracksInteractor
@@ -9,11 +9,18 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.presentation.SearchUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 
 class SearchViewModel(
     private val interactor: TracksInteractor
 ) : ViewModel() {
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
 
     private val _uiState = MutableLiveData<SearchUiState>()
     val uiState: LiveData<SearchUiState> get() = _uiState
@@ -22,6 +29,8 @@ class SearchViewModel(
     private var currentQuery: String = ""
     private var lastFoundTracks: List<Track>? = null
 
+    val latestQuery: String get() = currentQuery
+    val latestTracks: List<Track>? get() = lastFoundTracks
 
     fun onQueryChanged(query: String) {
         currentQuery = query.trim()
@@ -37,50 +46,44 @@ class SearchViewModel(
         }
     }
 
-    private fun searchTracks(query: String) {
+    private suspend fun searchTracks(query: String) {
         _uiState.value = SearchUiState.Loading
-
-        interactor.searchTracks(query) { result ->
-            result
-                .onSuccess { tracks ->
-                    lastFoundTracks = tracks
-                    _uiState.postValue(
-                        if (tracks.isEmpty()) SearchUiState.Empty
-                        else SearchUiState.Content(tracks)
-                    )
-                }
-                .onFailure {
-                    _uiState.postValue(SearchUiState.Error)
-                }
-        }
+        interactor.searchTracks(query)
+            .catch { _uiState.postValue(SearchUiState.Error) }
+            .collectLatest { tracks ->
+                lastFoundTracks = tracks
+                _uiState.postValue(
+                    if (tracks.isEmpty()) SearchUiState.Empty
+                    else SearchUiState.Content(tracks)
+                )
+            }
     }
 
-    fun loadHistory() {
-        interactor.loadHistory { result ->
-            result
-                .onSuccess { history ->
-                    _uiState.postValue(SearchUiState.History(history))
-                }
-                .onFailure {
-                    _uiState.postValue(SearchUiState.History(emptyList()))
-                }
-        }
+    private suspend fun loadHistory() {
+        interactor.loadHistory()
+            .catch { _uiState.postValue(SearchUiState.History(emptyList())) }
+            .collectLatest { history ->
+                _uiState.postValue(SearchUiState.History(history))
+            }
     }
 
     fun saveTrackToHistory(track: Track) {
-        interactor.saveTrack(track) {
+        viewModelScope.launch {
+            interactor.saveTrack(track)
             loadHistory()
         }
     }
 
     fun clearHistory() {
-        interactor.clearHistory()
-        _uiState.postValue(SearchUiState.History(emptyList()))
+        viewModelScope.launch {
+            interactor.clearHistory()
+            _uiState.postValue(SearchUiState.History(emptyList()))
+        }
     }
 
     fun retrySearch() {
         if (currentQuery.isNotEmpty()) {
-            searchTracks(currentQuery)
+            viewModelScope.launch { searchTracks(currentQuery) }
         }
     }
 
@@ -90,10 +93,10 @@ class SearchViewModel(
                 _uiState.value = SearchUiState.Content(lastFoundTracks!!)
             }
             currentQuery.isNotEmpty() -> {
-                searchTracks(currentQuery)
+                viewModelScope.launch { searchTracks(currentQuery) }
             }
             else -> {
-                loadHistory()
+                viewModelScope.launch { loadHistory() }
             }
         }
     }
@@ -102,8 +105,5 @@ class SearchViewModel(
         currentQuery = query
         lastFoundTracks = tracks
         _uiState.value = SearchUiState.Content(tracks)
-    }
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

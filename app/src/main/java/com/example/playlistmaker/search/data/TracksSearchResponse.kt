@@ -1,5 +1,11 @@
 package com.example.playlistmaker.search.data
 
-class TracksSearchResponse(val searchType: String,
-                           val expression: String,
-                           val results: List<TrackDto>) : Response()
+import com.google.gson.annotations.SerializedName
+
+data class TracksSearchResponse(
+    @SerializedName("resultCount")
+    val resultCount: Int,
+
+    @SerializedName("results")
+    val results: List<TrackDto>
+)

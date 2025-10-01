@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
 import com.example.playlistmaker.app.dpToPx
 import com.example.playlistmaker.app.getCoverArtwork
 import com.example.playlistmaker.app.getFormattedTime
@@ -16,12 +18,18 @@ import com.example.playlistmaker.app.getYearFromReleaseDate
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
 import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
-import com.example.playlistmaker.player.ui.MediaViewModel
 import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
+
+    companion object {
+        fun newInstance(track: Track?): PlayerFragment = PlayerFragment().apply {
+            arguments = Bundle().apply { putParcelable("track", track) }
+        }
+    }
 
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
@@ -43,16 +51,18 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        track = arguments?.getParcelable("track") ?: getLastTrackUseCase.execute()
-        if (track == null) {
-            parentFragmentManager.popBackStack()
-            return
-        }
+        lifecycleScope.launch {
+            track = arguments?.getParcelable("track") ?: getLastTrackUseCase.execute()
+            if (track == null) {
+                parentFragmentManager.popBackStack()
+                return@launch
+            }
 
-        setupUI(track!!)
-        observeViewModel()
-        viewModel.prepare(track!!.previewUrl ?: "", {}, {})
-        saveLastTrackUseCase.execute(track!!)
+            setupUI(track!!)
+            observeViewModel()
+            viewModel.prepare(track!!.previewUrl ?: "", {}, {})
+            saveLastTrackUseCase.execute(track!!)
+        }
 
         binding.play.setOnClickListener { viewModel.togglePlayPause() }
         binding.menuButton.setOnClickListener { findNavController().popBackStack() }
@@ -92,11 +102,5 @@ class PlayerFragment : Fragment() {
         super.onDestroyView()
         viewModel.release()
         _binding = null
-    }
-
-    companion object {
-        fun newInstance(track: Track?): PlayerFragment = PlayerFragment().apply {
-            arguments = Bundle().apply { putParcelable("track", track) }
-        }
     }
 }

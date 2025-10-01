@@ -7,5 +7,6 @@ import com.example.playlistmaker.search.domain.repository.TrackHistoryRepository
 class GetLastTrackUseCaseImpl(
     private val repo: TrackHistoryRepository
 ) : GetLastTrackUseCase {
-    override fun execute(): Track? = repo.getLastPlayedTrack()
+
+    override suspend fun execute(): Track? = repo.getLastPlayedTrack()
 }

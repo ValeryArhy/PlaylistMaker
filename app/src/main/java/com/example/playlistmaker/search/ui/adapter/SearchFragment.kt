@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.search.ui.adapter
 
 
 import android.os.Bundle
@@ -9,22 +9,28 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.presentation.SearchItem
 import com.example.playlistmaker.search.presentation.SearchUiState
 import com.example.playlistmaker.search.presentation.viewmodel.SearchViewModel
-import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : Fragment() {
 
+class SearchFragment : Fragment() {
+    companion object {
+        private const val SAVED_QUERY_KEY = "search_query"
+        private const val SAVED_TRACKS_KEY = "saved_tracks"
+    }
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
+
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
@@ -42,17 +48,20 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerViews()
+        setupAdapters()
         setupSearchInput()
         observeUiState()
 
         if (savedInstanceState != null) {
             val savedQuery = savedInstanceState.getString(SAVED_QUERY_KEY, "")
-            val savedTracks =
-                savedInstanceState.getParcelableArrayList<Track>(SAVED_TRACKS_KEY)
+            val savedTracks = savedInstanceState.getParcelableArrayList<Track>(SAVED_TRACKS_KEY)
 
-            if (!savedQuery.isNullOrEmpty() && !savedTracks.isNullOrEmpty()) {
-                viewModel.restoreFromSavedState(savedQuery, savedTracks)
+            if (!savedQuery.isNullOrEmpty()) {
+                binding.queryInput.setText(savedQuery)
+            }
+
+            if (!savedTracks.isNullOrEmpty()) {
+                viewModel.restoreFromSavedState(savedQuery ?: "", savedTracks)
             } else {
                 viewModel.restoreLastState()
             }
@@ -69,35 +78,24 @@ class SearchFragment : Fragment() {
         isFirstLaunch = false
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SAVED_QUERY_KEY, binding.queryInput.text?.toString().orEmpty())
-
-        (viewModel.uiState.value as? SearchUiState.Content)?.let { contentState ->
-            outState.putParcelableArrayList(SAVED_TRACKS_KEY, ArrayList(contentState.tracks))
-        }
-    }
-
-    private fun setupRecyclerViews() {
+    private fun setupAdapters() {
         searchAdapter = TrackAdapter { track ->
             viewModel.saveTrackToHistory(track)
-            findNavController().navigate(
-                R.id.playerFragment,
-                bundleOf("track" to track)
-            )
-            }
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = searchAdapter
+            findNavController().navigate(R.id.playerFragment, bundleOf("track" to track))
+        }
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = searchAdapter
+        }
 
         historyAdapter = TrackAdapter { track ->
             viewModel.saveTrackToHistory(track)
-            findNavController().navigate(
-                R.id.playerFragment,
-                bundleOf("track" to track)
-            )
+            findNavController().navigate(R.id.playerFragment, bundleOf("track" to track))
         }
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.historyRecyclerView.adapter = historyAdapter
+        binding.historyRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = historyAdapter
+        }
     }
 
     private fun setupSearchInput() {
@@ -106,29 +104,22 @@ class SearchFragment : Fragment() {
             binding.iconClear.isVisible = query.isNotEmpty()
             viewModel.onQueryChanged(query)
         }
-        binding.iconClear.setOnClickListener {
-            binding.queryInput.text?.clear()
-        }
-        binding.clearHistory.setOnClickListener {
-            viewModel.clearHistory()
-        }
-        binding.updateButton.setOnClickListener {
-            viewModel.retrySearch()
-        }
+
+        binding.iconClear.setOnClickListener { binding.queryInput.text?.clear() }
+        binding.clearHistory.setOnClickListener { viewModel.clearHistory() }
+        binding.updateButton.setOnClickListener { viewModel.retrySearch() }
     }
 
     private fun observeUiState() {
-        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+        viewModel.uiState.observe(viewLifecycleOwner, Observer { state ->
             hideAll()
 
             when (state) {
                 is SearchUiState.Loading -> binding.progressBar.isVisible = true
-
                 is SearchUiState.Content -> {
                     searchAdapter.submitList(state.tracks.map { SearchItem.TrackItem(it) })
                     binding.recyclerView.isVisible = true
                 }
-
                 is SearchUiState.History -> {
                     if (state.tracks.isNotEmpty()) {
                         historyAdapter.submitList(state.tracks.map { SearchItem.TrackItem(it) })
@@ -137,13 +128,11 @@ class SearchFragment : Fragment() {
                         binding.clearHistory.isVisible = true
                     }
                 }
-
                 is SearchUiState.Empty -> {
                     binding.placeholderContainer.isVisible = true
                     binding.placeholderImage.isVisible = true
                     binding.noFound.isVisible = true
                 }
-
                 is SearchUiState.Error -> {
                     binding.placeholderContainer.isVisible = true
                     binding.placeholderError.isVisible = true
@@ -151,7 +140,7 @@ class SearchFragment : Fragment() {
                     binding.updateButton.isVisible = true
                 }
             }
-        }
+        })
     }
 
     private fun hideAll() {
@@ -170,15 +159,20 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(SAVED_QUERY_KEY, viewModel.latestQuery)
+
+        viewModel.latestTracks?.let { tracks ->
+            outState.putParcelableArrayList(SAVED_TRACKS_KEY, ArrayList(tracks))
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    companion object {
-        private const val SAVED_QUERY_KEY = "search_query"
-        private const val SAVED_TRACKS_KEY = "saved_tracks"
 
-        fun newInstance(): SearchFragment = SearchFragment()
-    }
 }
