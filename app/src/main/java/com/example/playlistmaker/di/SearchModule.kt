@@ -24,7 +24,7 @@ val searchModule = module {
     }
 
     factory<TracksRepository> {
-        TracksRepositoryImpl(get())
+        TracksRepositoryImpl(get(), get())
     }
 
     factory<TrackHistoryRepository> {

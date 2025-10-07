@@ -59,13 +59,18 @@ class PlayerFragment : Fragment() {
             }
 
             setupUI(track!!)
+            viewModel.setFavoriteState(track!!.isFavorite)
             observeViewModel()
+            binding.favorites.setOnClickListener {
+                track?.let { viewModel.onFavoriteClicked(it) }
+            }
             viewModel.prepare(track!!.previewUrl ?: "", {}, {})
             saveLastTrackUseCase.execute(track!!)
         }
 
         binding.play.setOnClickListener { viewModel.togglePlayPause() }
-        binding.menuButton.setOnClickListener { findNavController().popBackStack() }
+        binding.menuButton.setOnClickListener { findNavController().popBackStack()
+        }
     }
 
     private fun setupUI(track: Track) {
@@ -91,6 +96,9 @@ class PlayerFragment : Fragment() {
         viewModel.trackPosition.observe(viewLifecycleOwner, Observer { time ->
             binding.trackTime.text = time
         })
+        viewModel.isFavorite.observe(viewLifecycleOwner) { isFav ->
+            binding.favorites.isSelected = isFav
+        }
     }
 
     override fun onPause() {
