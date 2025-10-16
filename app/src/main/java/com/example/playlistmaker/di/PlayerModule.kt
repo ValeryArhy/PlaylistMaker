@@ -6,6 +6,8 @@ import com.example.playlistmaker.player.data.AudioPlayerImpl
 import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
 import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
 import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
+import com.example.playlistmaker.player.domain.db.FavoriteTracksInteractor
+import com.example.playlistmaker.player.domain.impl.FavoriteTracksInteractorImpl
 import com.example.playlistmaker.player.domain.impl.GetLastTrackUseCaseImpl
 import com.example.playlistmaker.player.domain.impl.SaveLastTrackUseCaseImpl
 import com.example.playlistmaker.player.domain.impl.TrackPlayerUseCaseImpl
@@ -22,5 +24,7 @@ val playerModule = module {
     factory<SaveLastTrackUseCase> { SaveLastTrackUseCaseImpl(get()) }
     factory<TrackPlayerUseCase> { TrackPlayerUseCaseImpl(get()) }
 
-    viewModel { MediaViewModel(get()) }
+    single<FavoriteTracksInteractor> { FavoriteTracksInteractorImpl(get()) }
+
+    viewModel { MediaViewModel(get(), get()) }
 }
