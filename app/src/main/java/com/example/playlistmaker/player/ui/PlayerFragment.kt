@@ -68,6 +68,7 @@ class PlayerFragment : Fragment() {
             saveLastTrackUseCase.execute(track!!)
         }
 
+        binding.newPlaylist.setOnClickListener { findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)}
         binding.play.setOnClickListener { viewModel.togglePlayPause() }
         binding.menuButton.setOnClickListener { findNavController().popBackStack()
         }
