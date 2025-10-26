@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.domain.db
 
 import com.example.playlistmaker.player.data.PlaylistRepository
 import com.example.playlistmaker.player.domain.model.Playlist
+import com.example.playlistmaker.search.domain.model.Track
 
 class PlaylistInteractor(
     private val repository: PlaylistRepository
@@ -32,5 +33,9 @@ class PlaylistInteractor(
 
     suspend fun getPlaylistById(id: Long): Playlist? {
         return repository.getPlaylistById(id)
+    }
+
+    suspend fun addTrackToPlaylist(track: Track, playlistId: Long): Boolean {
+        return repository.addTrackToPlaylist(track, playlistId)
     }
 }

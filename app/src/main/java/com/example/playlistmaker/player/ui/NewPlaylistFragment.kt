@@ -4,14 +4,18 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -29,12 +33,18 @@ class NewPlaylistFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 coverPath = saveImageToPrivateStorage(uri)
-                coverPath?.let { binding.addPhotoPlaceholder.setImageURI(Uri.fromFile(File(it))) }
-            } else {
-                Log.d("PhotoPicker", "No media selected")
+                coverPath?.let { loadImage(Uri.fromFile(File(it))) }
             }
         }
 
+    private fun loadImage(uri: Uri) {
+        binding.addPhotoPlaceholderIcon.visibility = View.GONE
+        binding.addPhotoImage.visibility = View.VISIBLE
+
+        Glide.with(binding.addPhotoImage.context)
+            .load(uri)
+            .into(binding.addPhotoImage)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,7 +62,10 @@ class NewPlaylistFragment : Fragment() {
         }
 
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            handleExit()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, true) {
+            handleExit()
         }
 
         binding.savePlaylist.setOnClickListener {
@@ -60,11 +73,41 @@ class NewPlaylistFragment : Fragment() {
             if (name.isNotEmpty()) {
                 val description = binding.description.text.toString().trim()
                 viewModel.savePlaylist(name, description, coverPath) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Плейлист \"$name\" создан",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     findNavController().popBackStack()
                 }
             } else {
-                binding.description.error = "Введите название плейлиста"
+                binding.addName.error = "Введите название плейлиста"
             }
+        }
+
+        binding.addName.doOnTextChanged { text, _, _, _ ->
+            val isNotEmpty = !text.isNullOrBlank()
+            binding.savePlaylist.isEnabled = isNotEmpty
+            binding.addName.error = null
+        }
+    }
+
+    private fun handleExit() {
+        val hasData = !binding.addName.text.isNullOrBlank() ||
+                !binding.description.text.isNullOrBlank() ||
+                coverPath != null
+
+        if (hasData) {
+            androidx.appcompat.app.AlertDialog.Builder(requireContext(), R.style.MyAlertDialogTheme)
+                .setTitle(getString(R.string.dialog_finish_playlist_title))
+                .setMessage(getString(R.string.dialog_finish_playlist_message))
+                .setNegativeButton(getString(R.string.dialog_finish_playlist_cancel), null)
+                .setPositiveButton(getString(R.string.dialog_finish_playlist_confirm)) { _, _ ->
+                    findNavController().popBackStack()
+                }
+                .show()
+        } else {
+            findNavController().popBackStack()
         }
     }
 

@@ -6,6 +6,17 @@
         <item name="android:padding">20dp</item>
     </style>
 
+    <style name="RoundedTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="hintTextColor">?attr/colorSurfaceInverse</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxStrokeColor">@color/text_input_stroke</item>
+        <item name="colorControlActivated">@android:color/transparent</item>
+    </style>
+
     <style name="Title" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:textColor">@color/YP_Black</item>
         <item name="android:textSize">@dimen/text_size</item>

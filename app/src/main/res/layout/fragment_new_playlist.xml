@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorPrimary">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    tools:context="com.example.playlistmaker.player.ui.NewPlaylistFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/arrow_back"
         app:title="@string/new_playlist"
-        app:titleTextAppearance="@style/TextView.Medium.22.black"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:context=""/>
+        app:titleTextAppearance="@style/TextView.Medium.22.black" />
 
-    <ImageView
+    <FrameLayout
         android:id="@+id/addPhotoPlaceholder"
-        android:layout_width="312dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="24dp"
         android:layout_height="312dp"
-        android:background="@drawable/rounded_rectangle_punkt"
         android:layout_gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginTop="26dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:background="@drawable/rounded_rectangle_punkt"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <ImageView
+            android:id="@+id/addPhotoPlaceholderIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:src="@drawable/add_photo">
+
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/addPhotoImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="@drawable/rounded_image"
+            android:clipToOutline="true"/>
+
+    </FrameLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/name_playlist"
-        android:layout_marginTop="32dp"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="?attr/colorSurfaceInverse"
         android:layout_marginHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@id/addPhotoPlaceholder"
+        android:layout_marginTop="33dp"
+        style="@style/RoundedTextInput"
+        android:hint="@string/name_playlist"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/addPhotoPlaceholder">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/addName"
@@ -49,22 +66,22 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textColor="?attr/colorOnPrimary"
-            android:textColorHint="?attr/colorSurfaceInverse"/>
+            android:textColorHint="?attr/colorSurfaceInverse"
+            android:cursorVisible="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/descriptionInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/description"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="?attr/colorSurfaceInverse"
-        app:layout_constraintTop_toBottomOf="@id/nameInputLayout"
+        android:layout_marginTop="16dp"
+        style="@style/RoundedTextInput"
+        android:hint="@string/description"
+        android:textCursorDrawable="@drawable/cursor"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description"
@@ -72,21 +89,21 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textColor="?attr/colorOnPrimary"
-            android:textColorHint="?attr/colorSurfaceInverse"/>
+            android:textColorHint="?attr/colorSurfaceInverse" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/save_playlist"
+        android:enabled="false"
+        style="@style/TextView.Medium.16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_color"
-        android:text="@string/create"
-       style="@style/TextView.Medium.16"
         android:layout_marginHorizontal="17dp"
         android:layout_marginBottom="32dp"
+        android:background="@drawable/item_color"
         android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

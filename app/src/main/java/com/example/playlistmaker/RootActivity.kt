@@ -13,6 +13,11 @@ class RootActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRootBinding
 
+    private val hiddenMenuDestinations = setOf(
+        R.id.playerFragment,
+        R.id.newPlaylistFragment
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRootBinding.inflate(layoutInflater)
@@ -22,13 +27,10 @@ class RootActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // Привязка BottomNavigationView
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        // Слушаем изменения destination
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // Скрываем BottomNavigationView только на PlayerFragment
-            binding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment
+            binding.bottomNavigationView.isVisible = destination.id !in hiddenMenuDestinations
         }
     }
 }

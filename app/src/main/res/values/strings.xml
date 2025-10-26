@@ -33,6 +33,11 @@
     <string name="create">Создать</string>
     <string name="name_playlist">Название*</string>
     <string name="description">Описание</string>
-
-
+    <string name="add_track">Добавить в плейлист</string>
+    <string name="dialog_finish_playlist_title">Завершить создание плейлиста?</string>
+    <string name="dialog_finish_playlist_message">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_finish_playlist_cancel">Отмена</string>
+    <string name="dialog_finish_playlist_confirm">Завершить</string>
+    <string name="track_added">Трек добавлен в плейлист</string>
+    <string name="track_exists">Трек уже в плейлисте</string>
 </resources>

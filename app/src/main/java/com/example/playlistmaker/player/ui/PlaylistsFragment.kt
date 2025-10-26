@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.playlistmaker.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.player.ui.adapter.PlaylistsAdapter
@@ -62,7 +65,7 @@ class PlaylistsFragment : Fragment() {
         })
 
         binding.newPlaylistButton.setOnClickListener {
-
+            findNavController().navigate(R.id.action_mediaLibraryFragment_to_newPlaylistFragment)
         }
     }
 
