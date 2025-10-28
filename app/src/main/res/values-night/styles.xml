@@ -16,9 +16,10 @@
         <item name="fontFamily">@font/ys_display_regular</item>
     </style>
 
-    <style name="MyAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
+    <style name="MyAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/YP_Black</item> <!-- фон диалога -->
+        <item name="colorOnSurface">@color/white</item>    <!-- цвет текста -->
+        <item name="colorPrimary">@color/YP_Blue</item>       <!-- кнопки -->
     </style>
 
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">

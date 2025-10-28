@@ -135,6 +135,7 @@ class MediaViewModel(
             val success = interactor.addTrackToPlaylist(track, playlist.id)
             if (success) {
                 _trackAddStatus.postValue(playlist.name)
+                _playlists.postValue(interactor.getAllPlaylists())
             } else {
                 _trackAddStatus.postValue(null)
             }

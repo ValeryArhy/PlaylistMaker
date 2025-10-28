@@ -186,14 +186,23 @@ class PlayerFragment : Fragment() {
             binding.favorites.isSelected = isFav
         }
         viewModel.trackAddStatus.observe(viewLifecycleOwner) { playlistName ->
-            val message = if (playlistName != null) {
-                binding.newPlaylist.isSelected = true
-                getString(R.string.track_added)
-            } else {
-                binding.newPlaylist.isSelected = false
-                getString(R.string.track_exists)
+            playlistName?.let { name ->
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.track_added_to_playlist, name),
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                viewModel.loadPlaylists()
+            } ?: run {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.track_already_in_playlist),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

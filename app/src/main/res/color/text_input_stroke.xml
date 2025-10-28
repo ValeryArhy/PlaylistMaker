@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="?attr/colorSurfaceInverse" android:state_focused="true"/>
-    <item android:color="?attr/colorSurfaceInverse"/>
+
+    <item android:state_focused="true" android:color="@color/YP_Blue" />
+
+    <item android:state_activated="true" android:color="@color/YP_Blue" />
+
+    <item android:color="?attr/colorSurfaceInverse" />
 </selector>

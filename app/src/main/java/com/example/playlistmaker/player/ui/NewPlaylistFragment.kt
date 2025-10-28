@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.ui
 
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -11,12 +12,14 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -38,8 +41,8 @@ class NewPlaylistFragment : Fragment() {
         }
 
     private fun loadImage(uri: Uri) {
-        binding.addPhotoPlaceholderIcon.visibility = View.GONE
-        binding.addPhotoImage.visibility = View.VISIBLE
+        binding.addPhotoPlaceholderIcon.isVisible=false
+        binding.addPhotoImage.isVisible=true
 
         Glide.with(binding.addPhotoImage.context)
             .load(uri)
@@ -98,7 +101,7 @@ class NewPlaylistFragment : Fragment() {
                 coverPath != null
 
         if (hasData) {
-            androidx.appcompat.app.AlertDialog.Builder(requireContext(), R.style.MyAlertDialogTheme)
+            MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogTheme)
                 .setTitle(getString(R.string.dialog_finish_playlist_title))
                 .setMessage(getString(R.string.dialog_finish_playlist_message))
                 .setNegativeButton(getString(R.string.dialog_finish_playlist_cancel), null)

@@ -6,15 +6,24 @@
         <item name="android:padding">20dp</item>
     </style>
 
-    <style name="RoundedTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="hintTextColor">?attr/colorSurfaceInverse</item>
-        <item name="boxBackgroundColor">@android:color/transparent</item>
+    <style name="MyAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/white</item> <!-- фон диалога -->
+        <item name="colorOnSurface">@color/YP_Black</item>    <!-- цвет текста -->
+        <item name="colorPrimary">@color/YP_Blue</item>       <!-- кнопки -->
+    </style>
+
+
+    <style name="RoundedTextInput" parent="">
         <item name="boxBackgroundMode">outline</item>
-        <item name="boxStrokeColor">@color/text_input_stroke</item>
-        <item name="colorControlActivated">@android:color/transparent</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="hintAnimationEnabled">true</item>
     </style>
 
     <style name="Title" parent="Theme.MaterialComponents.DayNight.NoActionBar">

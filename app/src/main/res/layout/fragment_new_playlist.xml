@@ -56,6 +56,8 @@
         android:layout_marginTop="33dp"
         style="@style/RoundedTextInput"
         android:hint="@string/name_playlist"
+        app:boxStrokeColor="@color/text_input_stroke"
+        app:hintTextColor="@color/text_input_stroke"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addPhotoPlaceholder">
@@ -78,7 +80,8 @@
         android:layout_marginTop="16dp"
         style="@style/RoundedTextInput"
         android:hint="@string/description"
-        android:textCursorDrawable="@drawable/cursor"
+        app:boxStrokeColor="@color/text_input_stroke"
+        app:hintTextColor="@color/text_input_stroke"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
@@ -89,7 +92,8 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textColor="?attr/colorOnPrimary"
-            android:textColorHint="?attr/colorSurfaceInverse" />
+            android:textColorHint="?attr/colorSurfaceInverse"
+            android:cursorVisible="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
