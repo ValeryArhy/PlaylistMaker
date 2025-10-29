@@ -26,5 +26,5 @@ val playerModule = module {
 
     single<FavoriteTracksInteractor> { FavoriteTracksInteractorImpl(get()) }
 
-    viewModel { MediaViewModel(get(), get()) }
+    viewModel { MediaViewModel(get(), get(), get()) }
 }

@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
 import com.example.playlistmaker.app.formatTime
 import com.example.playlistmaker.player.domain.db.FavoriteTracksInteractor
+import com.example.playlistmaker.player.domain.db.PlaylistInteractor
+import com.example.playlistmaker.player.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class MediaViewModel(
     private val playerUseCase: TrackPlayerUseCase,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val interactor: PlaylistInteractor
 ) : ViewModel() {
 
     private val _isPlaying = MutableLiveData(false)
@@ -28,6 +31,12 @@ class MediaViewModel(
 
     private val _isFavorite = MutableLiveData(false)
     val isFavorite: LiveData<Boolean> = _isFavorite
+
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> get() = _playlists
+
+    private val _trackAddStatus = MutableLiveData<String?>()
+    val trackAddStatus: LiveData<String?> get() = _trackAddStatus
 
 
     fun setFavoriteState(isFavorite: Boolean) {
@@ -110,5 +119,26 @@ class MediaViewModel(
         progressJob = null
     }
 
+    fun loadPlaylists() {
+        viewModelScope.launch {
+            _playlists.value = interactor.getAllPlaylists()
+        }
+    }
 
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        if (playlist.trackIds.contains(track.id)) {
+            _trackAddStatus.value = null
+            return
+        }
+
+        viewModelScope.launch {
+            val success = interactor.addTrackToPlaylist(track, playlist.id)
+            if (success) {
+                _trackAddStatus.postValue(playlist.name)
+                _playlists.postValue(interactor.getAllPlaylists())
+            } else {
+                _trackAddStatus.postValue(null)
+            }
+        }
+    }
 }
