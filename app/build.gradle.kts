@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("kotlin-kapt")
+    id("androidx.navigation.safeargs.kotlin") version "2.7.2"
 }
 
 android {

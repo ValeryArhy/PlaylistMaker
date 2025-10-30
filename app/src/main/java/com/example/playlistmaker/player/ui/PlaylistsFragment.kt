@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
@@ -40,7 +39,15 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = PlaylistsAdapter()
+        adapter = PlaylistsAdapter { playlistId ->
+            val bundle = Bundle().apply {
+                putLong("playlist_id", playlistId)
+            }
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playlistFragment,
+                bundle
+            )
+        }
         binding.rvPlaylists.adapter = adapter
         binding.rvPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
 
@@ -56,7 +63,6 @@ class PlaylistsFragment : Fragment() {
                 adapter.setItems(playlists)
             }
         }
-
 
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
