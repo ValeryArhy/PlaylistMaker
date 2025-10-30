@@ -127,9 +127,9 @@ class PlaylistFragment : Fragment() {
         binding.playlistDelete.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogTheme)
                 .setTitle(getString(R.string.Deleted_playlist))
-                .setMessage(getString(R.string.delete_playlist_message, viewModel.playlistName.value ?: "" ))
-                .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                .setMessage(getString(R.string.delete_playlist_message))
+                .setNegativeButton(getString(R.string.cancel_deleted)) { dialog, _ -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.deleted_playlist)) { _, _ ->
                     viewModel.deletePlaylist(playlistId) {
                         findNavController().popBackStack()
                     }
