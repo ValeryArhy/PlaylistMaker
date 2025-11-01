@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -94,19 +93,25 @@ class PlaylistFragment : Fragment() {
 
 
     private fun setupTrackAdapter() {
-        trackAdapter = PlaylistTracksAdapter { track ->
-            showOverlay(true)
-            MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogTheme)
-                .setTitle(getString(R.string.delete_track_title))
-                .setNegativeButton(getString(R.string.cancel)) { _, _ -> showOverlay(false) }
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
-                    viewModel.deleteTrack(playlistId, track.id)
-                    showOverlay(false)
-                }
-                .setOnDismissListener { showOverlay(false) }
-                .show()
-        }
-
+        trackAdapter = PlaylistTracksAdapter(
+            onTrackClick = { track ->
+                val action = PlaylistFragmentDirections
+                    .actionPlaylistFragmentToPlayerFragment2()
+                findNavController().navigate(action)
+            },
+            onRemoveClick = { track ->
+                showOverlay(true)
+                MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogTheme)
+                    .setTitle(getString(R.string.delete_track_title))
+                    .setNegativeButton(getString(R.string.cancel)) { _, _ -> showOverlay(false) }
+                    .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                        viewModel.deleteTrack(playlistId, track.id)
+                        showOverlay(false)
+                    }
+                    .setOnDismissListener { showOverlay(false) }
+                    .show()
+            }
+        )
         binding.RecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = trackAdapter
@@ -171,15 +176,13 @@ class PlaylistFragment : Fragment() {
             trackAdapter.submitList(tracks)
         }
         viewModel.isEmpty.observe(viewLifecycleOwner) { empty ->
-            if (empty) Toast.makeText(requireContext(), "В плейлисте нет треков", Toast.LENGTH_SHORT).show()
+            if (empty) Toast.makeText(requireContext(), getString(R.string.no_tracks), Toast.LENGTH_SHORT).show()
         }
 
     }
 
     private fun setupIncludeObservers() {
-        viewModel.playlistName.observe(viewLifecycleOwner) { name ->
-            playlistInfoBinding.PlaylistName.text = name
-        }
+
 
         viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             playlistInfoBinding.TrackCount.text = "${tracks.size} треков"

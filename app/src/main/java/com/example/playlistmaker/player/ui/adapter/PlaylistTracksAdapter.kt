@@ -8,10 +8,12 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.app.getFormattedTime
 import com.example.playlistmaker.databinding.TrackItemBinding
 import com.example.playlistmaker.search.domain.model.Track
-
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.app.dpToPx
 
 
 class PlaylistTracksAdapter(
+    private val onTrackClick: (Track) -> Unit,
     private val onRemoveClick: (Track) -> Unit
 ) : RecyclerView.Adapter<PlaylistTracksAdapter.TrackViewHolder>() {
 
@@ -48,8 +50,12 @@ class PlaylistTracksAdapter(
             Glide.with(binding.iconAlbum.context)
                 .load(track.artworkUrl)
                 .placeholder(R.drawable.placeholder)
+                .transform(RoundedCorners(itemView.context.dpToPx(2)))
                 .into(binding.iconAlbum)
 
+            itemView.setOnClickListener {
+                onTrackClick(track)
+            }
             itemView.setOnLongClickListener {
                 onRemoveClick(track)
                 true

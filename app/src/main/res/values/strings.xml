@@ -58,5 +58,5 @@
     <string name="playlist_created">Плейлист "%1$s" создан</string>
     <string name="deleted_playlist">удалить</string>
     <string name="cancel_deleted">отмена</string>
-
+    <string name="no_tracks">В плейлисте нет треков</string>
 </resources>

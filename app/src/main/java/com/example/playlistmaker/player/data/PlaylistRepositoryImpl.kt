@@ -39,9 +39,8 @@ class PlaylistRepositoryImpl(
 
         if (playlist.trackIds.contains(track.id)) return false
 
-
+        appDatabase.trackDao().insertTrackForPlaylist(trackConverter.map(track))
         appDatabase.playlistTrackDao().insert(PlaylistTrackEntity(track.id, playlistId))
-        appDatabase.trackDao().insertTrack(trackConverter.map(track))
 
 
         val updatedTrackIds = playlist.trackIds.toMutableList().apply { add(track.id) }

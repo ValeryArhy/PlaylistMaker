@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistItemBinding
 import com.example.playlistmaker.player.domain.model.Playlist
 import java.io.File
@@ -40,9 +41,9 @@ class PlaylistsAdapter(
             binding.TrackCount.text = "${playlist.trackCount} треков"
 
             val coverFile = playlist.coverPath?.let { File(it) }
-
             Glide.with(binding.PlaylistCover.context)
                 .load(coverFile)
+                .placeholder(R.drawable.placeholder2)
                 .into(binding.PlaylistCover)
             binding.root.setOnClickListener {
                 onItemClick(playlist.id)

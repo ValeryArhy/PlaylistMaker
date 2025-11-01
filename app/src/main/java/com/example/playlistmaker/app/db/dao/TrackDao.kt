@@ -15,13 +15,19 @@ interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: TrackEntity)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTrackForPlaylist(track: TrackEntity)
+
+    @Query("UPDATE tracks_table SET isFavorite = 0 WHERE trackId = :trackId")
+    suspend fun removeTrackFromFavorites(trackId: Long)
+
     @Delete
     suspend fun deleteTrack(track: TrackEntity)
 
     @Query("SELECT trackId FROM tracks_table")
     suspend fun getAllFavoriteTrackId(): List<Long>
 
-    @Query("SELECT * FROM tracks_table ORDER BY addedAt DESC")
+    @Query("SELECT * FROM tracks_table WHERE isFavorite = 1 ORDER BY addedAt DESC")
     fun getAllFavoriteTracksFlow(): Flow<List<TrackEntity>>
 
     @Query("SELECT * FROM tracks_table WHERE trackId IN (:trackIds)")
