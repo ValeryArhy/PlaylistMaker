@@ -44,7 +44,7 @@ class PlayerFragment : Fragment() {
 
     private val getLastTrackUseCase: GetLastTrackUseCase by inject()
     private val saveLastTrackUseCase: SaveLastTrackUseCase by inject()
-    private val viewModel: MediaViewModel by viewModel()
+    private val viewModel: PlayerViewModel by viewModel()
 
     private var track: Track? = null
 

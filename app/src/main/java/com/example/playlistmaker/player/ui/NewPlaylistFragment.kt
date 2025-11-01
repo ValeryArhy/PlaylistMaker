@@ -24,13 +24,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
-    private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    protected var _binding: FragmentNewPlaylistBinding? = null
+    protected val binding get() = _binding!!
 
-    private val viewModel: NewPlaylistViewModel by viewModel()
-    private var coverPath: String? = null
+    protected open val  viewModel: NewPlaylistViewModel by viewModel()
+    protected var coverPath: String? = null
 
     private val addPicture =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -40,7 +40,7 @@ class NewPlaylistFragment : Fragment() {
             }
         }
 
-    private fun loadImage(uri: Uri) {
+    protected fun loadImage(uri: Uri) {
         binding.addPhotoPlaceholderIcon.isVisible=false
         binding.addPhotoImage.isVisible=true
 
@@ -78,13 +78,11 @@ class NewPlaylistFragment : Fragment() {
                 viewModel.savePlaylist(name, description, coverPath) {
                     Toast.makeText(
                         requireContext(),
-                        "Плейлист \"$name\" создан",
+                        getString(R.string.playlist_created, name),
                         Toast.LENGTH_SHORT
                     ).show()
                     findNavController().popBackStack()
                 }
-            } else {
-                binding.addName.error = "Введите название плейлиста"
             }
         }
 

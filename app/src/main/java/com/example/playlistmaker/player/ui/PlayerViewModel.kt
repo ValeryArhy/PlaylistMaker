@@ -17,7 +17,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
-class MediaViewModel(
+class PlayerViewModel(
     private val playerUseCase: TrackPlayerUseCase,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private val interactor: PlaylistInteractor

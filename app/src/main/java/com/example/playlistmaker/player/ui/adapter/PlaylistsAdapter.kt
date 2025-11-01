@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +9,9 @@ import com.example.playlistmaker.databinding.PlaylistItemBinding
 import com.example.playlistmaker.player.domain.model.Playlist
 import java.io.File
 
-class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolder>() {
+class PlaylistsAdapter(
+    private val onItemClick: (playlistId: Long) -> Unit
+) : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolder>() {
 
     private val playlists = mutableListOf<Playlist>()
 
@@ -21,7 +22,8 @@ class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
-        val binding = PlaylistItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            PlaylistItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PlaylistViewHolder(binding)
     }
 
@@ -39,14 +41,14 @@ class PlaylistsAdapter : RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolde
             binding.TrackCount.text = "${playlist.trackCount} треков"
 
             val coverFile = playlist.coverPath?.let { File(it) }
-
-            if (coverFile != null && coverFile.exists()) {
-                Glide.with(binding.PlaylistCover.context)
-                    .load(coverFile)
-                    .into(binding.PlaylistCover)
-            } else {
-                binding.PlaylistCover.setImageResource(R.drawable.placeholder2)
+            Glide.with(binding.PlaylistCover.context)
+                .load(coverFile)
+                .placeholder(R.drawable.placeholder2)
+                .into(binding.PlaylistCover)
+            binding.root.setOnClickListener {
+                onItemClick(playlist.id)
             }
+
         }
     }
 }

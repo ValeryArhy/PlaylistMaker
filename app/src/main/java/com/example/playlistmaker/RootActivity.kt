@@ -15,7 +15,9 @@ class RootActivity : AppCompatActivity() {
 
     private val hiddenMenuDestinations = setOf(
         R.id.playerFragment,
-        R.id.newPlaylistFragment
+        R.id.newPlaylistFragment,
+        R.id.playlistFragment,
+        R.id.editPlaylistFragment
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
