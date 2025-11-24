@@ -23,6 +23,7 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
 import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
 import com.example.playlistmaker.player.ui.adapter.PlaylistAdapterMini
+import com.example.playlistmaker.player.ui.customView.PlaybackButtonView
 import com.example.playlistmaker.search.domain.model.Track
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ class PlayerFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var adapterMini: PlaylistAdapterMini
+    private lateinit var playbackButtonView: PlaybackButtonView
 
     private val getLastTrackUseCase: GetLastTrackUseCase by inject()
     private val saveLastTrackUseCase: SaveLastTrackUseCase by inject()
@@ -75,6 +77,15 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        playbackButtonView = binding.play
+        playbackButtonView.setOnPlaybackStateChangeListener { isPlaying ->
+            viewModel.togglePlayPause()
+        }
+
+        viewModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
+            playbackButtonView.setPlaybackState(isPlaying)
+        }
 
         lifecycleScope.launch {
             track = arguments?.getParcelable("track") ?: getLastTrackUseCase.execute()
@@ -139,8 +150,6 @@ class PlayerFragment : Fragment() {
         binding.overlay.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
-
-        binding.play.setOnClickListener { viewModel.togglePlayPause() }
 
         adapterMini = PlaylistAdapterMini { playlist ->
             track?.let { viewModel.addTrackToPlaylist(it, playlist) }
