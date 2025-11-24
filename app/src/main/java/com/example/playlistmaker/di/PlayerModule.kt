@@ -11,7 +11,9 @@ import com.example.playlistmaker.player.domain.impl.FavoriteTracksInteractorImpl
 import com.example.playlistmaker.player.domain.impl.GetLastTrackUseCaseImpl
 import com.example.playlistmaker.player.domain.impl.SaveLastTrackUseCaseImpl
 import com.example.playlistmaker.player.domain.impl.TrackPlayerUseCaseImpl
-import com.example.playlistmaker.player.ui.MediaViewModel
+import com.example.playlistmaker.player.ui.EditPlaylistViewModel
+import com.example.playlistmaker.player.ui.PlayerViewModel
+import com.example.playlistmaker.player.ui.PlaylistViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -26,5 +28,8 @@ val playerModule = module {
 
     single<FavoriteTracksInteractor> { FavoriteTracksInteractorImpl(get()) }
 
-    viewModel { MediaViewModel(get(), get(), get()) }
+    viewModel { PlayerViewModel(get(), get(), get()) }
+    viewModel { PlaylistViewModel(get()) }
+    viewModel { EditPlaylistViewModel(get(),get()) }
+
 }

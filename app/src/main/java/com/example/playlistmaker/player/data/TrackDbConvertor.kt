@@ -16,7 +16,8 @@ class TrackDbConvertor {
             releaseDate = track.releaseYear ?: "",
             primaryGenreName = track.genre ?: "",
             country = track.country ?: "",
-            previewUrl = track.previewUrl ?: ""
+            previewUrl = track.previewUrl ?: "",
+            isFavorite = track.isFavorite
         )
     }
 
@@ -32,7 +33,7 @@ class TrackDbConvertor {
             artworkUrl = entity.artworkUrl100.replaceAfterLast("/", "512x512bb.jpg"),
             genre = entity.primaryGenreName,
             country = entity.country,
-            isFavorite = true
+            isFavorite = entity.isFavorite
         )
     }
 }
