@@ -1,6 +1,11 @@
 package com.example.playlistmaker.player.ui
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +24,10 @@ import com.example.playlistmaker.app.getCoverArtwork
 import com.example.playlistmaker.app.getFormattedTime
 import com.example.playlistmaker.app.getYearFromReleaseDate
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.player.data.AudioPlayerService
+import com.example.playlistmaker.player.domain.api.AudioPlayerServiceController
 import com.example.playlistmaker.player.domain.api.GetLastTrackUseCase
+import com.example.playlistmaker.player.domain.api.PlayerState
 import com.example.playlistmaker.player.domain.api.SaveLastTrackUseCase
 import com.example.playlistmaker.player.ui.adapter.PlaylistAdapterMini
 import com.example.playlistmaker.player.ui.customView.PlaybackButtonView
@@ -31,12 +38,6 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
-
-    companion object {
-        fun newInstance(track: Track?): PlayerFragment = PlayerFragment().apply {
-            arguments = Bundle().apply { putParcelable("track", track) }
-        }
-    }
 
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
@@ -50,15 +51,33 @@ class PlayerFragment : Fragment() {
 
     private var track: Track? = null
 
+    private var audioPlayerServiceController: AudioPlayerServiceController? = null
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as? AudioPlayerService.LocalBinder
+            audioPlayerServiceController = binder?.getService()
+
+            track?.let {
+                audioPlayerServiceController?.let { controller ->
+                    viewModel.setServiceController(controller, it)
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            audioPlayerServiceController = null
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         parentFragmentManager.setFragmentResultListener("newPlaylistCreated", this) { _, bundle ->
             val playlistId = bundle.getLong("new_playlist_id")
             viewModel.loadPlaylists()
 
             track?.let { currentTrack ->
-                viewModel.playlists.observe(viewLifecycleOwner) { playlists ->
+                viewModel.playlists.observe(this@PlayerFragment.viewLifecycleOwner) { playlists ->
                     playlists.find { it.id == playlistId }?.let { newPlaylist ->
                         viewModel.addTrackToPlaylist(currentTrack, newPlaylist)
                     }
@@ -83,10 +102,6 @@ class PlayerFragment : Fragment() {
             viewModel.togglePlayPause()
         }
 
-        viewModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            playbackButtonView.setPlaybackState(isPlaying)
-        }
-
         lifecycleScope.launch {
             track = arguments?.getParcelable("track") ?: getLastTrackUseCase.execute()
             if (track == null) {
@@ -100,9 +115,13 @@ class PlayerFragment : Fragment() {
             binding.favorites.setOnClickListener {
                 track?.let { viewModel.onFavoriteClicked(it) }
             }
-            viewModel.prepare(track!!.previewUrl ?: "", {}, {})
+
+
             saveLastTrackUseCase.execute(track!!)
 
+
+            val intent = Intent(requireContext(), AudioPlayerService::class.java)
+            requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
@@ -139,12 +158,12 @@ class PlayerFragment : Fragment() {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
                 isEnabled = false
-                requireActivity()
+                findNavController().popBackStack()
             }
         }
 
         binding.menuButton.setOnClickListener {
-                findNavController().popBackStack()
+            findNavController().popBackStack()
         }
 
         binding.overlay.setOnClickListener {
@@ -168,6 +187,18 @@ class PlayerFragment : Fragment() {
         }
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.onUiVisible()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onUiHidden()
+    }
+
+
     private fun setupUI(track: Track) {
         binding.trackName.text = track.name
         binding.artistName.text = track.artist
@@ -185,12 +216,19 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.isPlaying.observe(viewLifecycleOwner, Observer { isPlaying ->
-            binding.play.isSelected = isPlaying
-        })
-        viewModel.trackPosition.observe(viewLifecycleOwner, Observer { time ->
+        viewModel.playerState.observe(viewLifecycleOwner) { state ->
+            val isPlaying = (state == PlayerState.PLAYING)
+            playbackButtonView.setPlaybackState(isPlaying)
+
+            if (state == PlayerState.STOPPED) {
+                binding.trackTime.text = "00:00"
+            }
+        }
+
+        viewModel.trackPosition.observe(viewLifecycleOwner) { time ->
             binding.trackTime.text = time
-        })
+        }
+
         viewModel.isFavorite.observe(viewLifecycleOwner) { isFav ->
             binding.favorites.isSelected = isFav
         }
@@ -215,14 +253,10 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pause()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.release()
+        requireActivity().unbindService(serviceConnection)
+
         _binding = null
     }
 }
