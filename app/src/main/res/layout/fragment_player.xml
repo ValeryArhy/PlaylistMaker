@@ -100,16 +100,17 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@+id/artistName" />
 
-            <ImageButton
+            <com.example.playlistmaker.player.ui.customView.PlaybackButtonView
                 android:id="@+id/play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="30dp"
-                android:background="@null"
-                android:src="@drawable/play_selector"
                 app:layout_constraintEnd_toStartOf="@id/favorites"
                 app:layout_constraintStart_toEndOf="@id/new_playlist"
-                app:layout_constraintTop_toBottomOf="@+id/artistName" />
+                app:layout_constraintTop_toBottomOf="@+id/artistName"
+                app:playIcon="@drawable/ic_play"
+                app:pauseIcon="@drawable/ic_pause"
+                app:initialIsPlaying="false"/>
 
             <ImageButton
                 android:id="@+id/favorites"
@@ -256,7 +257,8 @@
         android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="360dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="gone">
 
         <View
             android:layout_width="50dp"
