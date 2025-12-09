@@ -60,5 +60,6 @@
     <string name="cancel_deleted">отмена</string>
     <string name="no_tracks">В плейлисте нет треков</string>
     <string name="channel_name">Управление воспроизведением</string>
+    <string name="notification_permission_denied">Разрешение на работу плеера в фоновом режиме</string>
     <string name="channel_description">Позволяет управлять воспроизведением музыки в фоновом режиме</string>
 </resources>

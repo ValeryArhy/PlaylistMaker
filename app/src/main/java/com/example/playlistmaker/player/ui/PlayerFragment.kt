@@ -4,6 +4,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
@@ -36,6 +38,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
 
 class PlayerFragment : Fragment() {
 
@@ -50,6 +54,19 @@ class PlayerFragment : Fragment() {
     private val viewModel: PlayerViewModel by viewModel()
 
     private var track: Track? = null
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.notification_permission_denied),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
     private var audioPlayerServiceController: AudioPlayerServiceController? = null
     private val serviceConnection = object : ServiceConnection {
@@ -96,6 +113,12 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
 
         playbackButtonView = binding.play
         playbackButtonView.setOnPlaybackStateChangeListener { isPlaying ->
