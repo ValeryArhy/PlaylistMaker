@@ -5,23 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.player.domain.api.TrackPlayerUseCase
-import com.example.playlistmaker.app.formatTime
+import com.example.playlistmaker.player.domain.api.AudioPlayerServiceController
+import com.example.playlistmaker.player.domain.api.PlayerState
 import com.example.playlistmaker.player.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.player.domain.db.PlaylistInteractor
 import com.example.playlistmaker.player.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
 class PlayerViewModel(
-    private val playerUseCase: TrackPlayerUseCase,
+
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private val interactor: PlaylistInteractor
 ) : ViewModel() {
+
+    private var serviceController: AudioPlayerServiceController? = null
+
+    private val _playerState = MutableLiveData(PlayerState.STOPPED)
+    val playerState: LiveData<PlayerState> = _playerState
 
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
@@ -39,12 +41,48 @@ class PlayerViewModel(
     val trackAddStatus: LiveData<String?> get() = _trackAddStatus
 
 
+    private var currentTrack: Track? = null
+
     fun setFavoriteState(isFavorite: Boolean) {
         _isFavorite.value = isFavorite
     }
 
-    private var progressJob: Job? = null
-    private var lastPosition: Int = 0
+    fun setServiceController(controller: AudioPlayerServiceController, track: Track) {
+        this.serviceController = controller
+        this.currentTrack = track
+
+        controller.prepareAndPlay(track.previewUrl ?: "", track.name, track.artist) // 👈 Только подготовка
+
+        viewModelScope.launch {
+            controller.getPlayerStateFlow().collect { state ->
+                _playerState.postValue(state)
+
+                _isPlaying.postValue(state == PlayerState.PLAYING)
+            }
+        }
+
+        viewModelScope.launch {
+            controller.getTrackPositionFlow().collect { position ->
+                _trackPosition.postValue(position)
+            }
+        }
+    }
+
+    fun togglePlayPause() {
+        serviceController?.togglePlayPause()
+    }
+
+    fun onUiVisible() {
+        if (_playerState.value == PlayerState.PLAYING) {
+            serviceController?.stopForegroundNotification()
+        }
+    }
+
+    fun onUiHidden() {
+        if (_playerState.value == PlayerState.PLAYING && currentTrack != null) {
+            serviceController?.startForegroundNotification(currentTrack!!.name, currentTrack!!.artist)
+        }
+    }
 
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
@@ -55,68 +93,6 @@ class PlayerViewModel(
             }
             _isFavorite.postValue(!(_isFavorite.value ?: false))
         }
-    }
-
-
-    fun prepare(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit) {
-        playerUseCase.prepare(url, {
-            onPrepared()
-            _trackPosition.value = "00:00"
-        }, {
-            _isPlaying.value = false
-            _trackPosition.value = "00:00"
-            stopProgressUpdates()
-            onCompletion()
-        })
-    }
-
-    fun play() {
-        playerUseCase.play()
-        _isPlaying.value = true
-        startProgressUpdates()
-    }
-
-    fun pause() {
-        lastPosition = playerUseCase.getPosition()
-        playerUseCase.pause()
-        _isPlaying.value = false
-        stopProgressUpdates()
-    }
-
-    fun restart() {
-        playerUseCase.restart()
-        play()
-    }
-
-    fun togglePlayPause() {
-        if (_isPlaying.value == true) pause() else play()
-    }
-
-    fun release() {
-        playerUseCase.release()
-        stopProgressUpdates()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        playerUseCase.release()
-        stopProgressUpdates()
-    }
-
-
-    private fun startProgressUpdates() {
-        stopProgressUpdates()
-        progressJob = viewModelScope.launch {
-            while (isActive) {
-                _trackPosition.value = formatTime(playerUseCase.getPosition())
-                delay(300L)
-            }
-        }
-    }
-
-    private fun stopProgressUpdates() {
-        progressJob?.cancel()
-        progressJob = null
     }
 
     fun loadPlaylists() {
