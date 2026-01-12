@@ -29,9 +29,13 @@ class SearchFragment : Fragment() {
             setContent {
 
                 PlaylistMakerTheme {
-                val uiState by viewModel.uiState.observeAsState(SearchUiState.History(emptyList()))
-                var searchText by remember { mutableStateOf(viewModel.latestQuery) }
+                    val uiState by viewModel.uiState.observeAsState(SearchUiState.History(emptyList()))
 
+                    var searchText by remember { mutableStateOf(viewModel.latestQuery) }
+
+                    LaunchedEffect(Unit) {
+                        searchText = viewModel.latestQuery
+                    }
 
                     SearchScreen(
                         uiState = uiState,

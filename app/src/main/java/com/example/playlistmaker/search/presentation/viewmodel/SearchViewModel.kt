@@ -30,24 +30,38 @@ class SearchViewModel(
     private var lastFoundTracks: List<Track>? = null
 
     val latestQuery: String get() = currentQuery
-    val latestTracks: List<Track>? get() = lastFoundTracks
+
+    init {
+        loadHistoryInstant()
+    }
 
     fun onQueryChanged(query: String) {
-        currentQuery = query.trim()
+        if (currentQuery == query) return
+
+        currentQuery = query
 
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            if (currentQuery.isEmpty()) {
-                loadHistory()
-            } else {
+
+
+        if (currentQuery.isBlank()) {
+            loadHistoryInstant()
+        } else {
+
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
                 searchTracks(currentQuery)
             }
         }
     }
 
+    private fun loadHistoryInstant() {
+        viewModelScope.launch {
+            loadHistory()
+        }
+    }
+
     private suspend fun searchTracks(query: String) {
-        _uiState.value = SearchUiState.Loading
+        _uiState.postValue(SearchUiState.Loading)
         interactor.searchTracks(query)
             .catch { _uiState.postValue(SearchUiState.Error) }
             .collectLatest { tracks ->
@@ -63,7 +77,9 @@ class SearchViewModel(
         interactor.loadHistory()
             .catch { _uiState.postValue(SearchUiState.History(emptyList())) }
             .collectLatest { history ->
-                _uiState.postValue(SearchUiState.History(history))
+                if (currentQuery.isEmpty()) {
+                    _uiState.postValue(SearchUiState.History(history))
+                }
             }
     }
 
