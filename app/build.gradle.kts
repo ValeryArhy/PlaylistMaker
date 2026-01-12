@@ -21,19 +21,40 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
+
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
+    val composeBom = platform("androidx.compose:compose-bom:2025.12.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.runtime:runtime-livedata")
+
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
+
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
+
+    implementation("androidx.activity:activity-compose")
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
     // Kotlin
     implementation(libs.kotlinx.coroutines.android)
 

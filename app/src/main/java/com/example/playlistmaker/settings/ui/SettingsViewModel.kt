@@ -1,5 +1,6 @@
 package com.example.playlistmaker.settings.ui
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +18,11 @@ class SettingsViewModel(
     }
 
     fun switchTheme(enabled: Boolean) {
-        themeInteractor.setDarkTheme(enabled)
+        // 1. Сначала обновляем состояние во вьюмодели
         _isDarkTheme.value = enabled
+
+        // 2. Сохраняем в настройки через интерактор
+        themeInteractor.setDarkTheme(enabled)
+
     }
 }
